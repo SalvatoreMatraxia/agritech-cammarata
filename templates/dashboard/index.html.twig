@@ -1,0 +1,221 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard — Agritech Cammarata{% endblock %}
+
+{% block body %}
+<div class="page-title">
+    Benvenuto{% if farm %}, <strong>{{ farm.name }}</strong>{% endif %}
+    <small>{{ 'now'|date('d/m/Y') }}</small>
+</div>
+
+{% if farm is null %}
+    <div class="empty-state">
+        <span class="emoji">🌿</span>
+        Nessuna azienda configurata. Contatta l'amministratore.
+    </div>
+{% else %}
+
+<div class="dashboard-grid">
+
+    {# ── METEO OGGI ─────────────────────────────────────── #}
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🌤️</span>
+            Meteo Oggi — {{ farm.municipality }} ({{ farm.altitude }} m)
+        </div>
+        <div class="card-body">
+            {% if weather %}
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-icon">🌡️</div>
+                    <div class="stat-value">{{ weather.temp is not null ? weather.temp|number_format(1) ~ '°' : '—' }}</div>
+                    <div class="stat-label">Temperatura</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">💧</div>
+                    <div class="stat-value">{{ weather.humidity is not null ? weather.humidity ~ '%' : '—' }}</div>
+                    <div class="stat-label">Umidità</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">🌧️</div>
+                    <div class="stat-value">{{ weather.rain is not null ? weather.rain|number_format(1) ~ ' mm' : '—' }}</div>
+                    <div class="stat-label">Pioggia</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">💨</div>
+                    <div class="stat-value">{{ weather.wind is not null ? weather.wind|number_format(0) ~ ' km/h' : '—' }}</div>
+                    <div class="stat-label">Vento</div>
+                </div>
+            </div>
+            {% if weather.time %}
+            <p style="text-align:right;font-size:.72rem;color:var(--text-muted);margin-top:.75rem;">
+                Rilevazione: {{ weather.time|replace({'T': ' '}) }}
+            </p>
+            {% endif %}
+            {% else %}
+            <p style="color:var(--text-muted);text-align:center;padding:1rem 0;">Dati meteo non disponibili.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {# ── LA TUA AZIENDA ──────────────────────────────────── #}
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🌿</span>
+            La Tua Azienda
+        </div>
+        <div class="card-body">
+            <div class="info-list">
+                <div class="info-row">
+                    <span class="label">Nome azienda</span>
+                    <span class="value">{{ farm.name }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Superficie totale</span>
+                    <span class="value">{{ farm.surface|number_format(1) }} ha</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Piante totali</span>
+                    <span class="value">{{ totalTrees }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Comune</span>
+                    <span class="value">{{ farm.municipality }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Altitudine</span>
+                    <span class="value">{{ farm.altitude }} m s.l.m.</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Tipo suolo</span>
+                    <span class="value">{{ farm.soilType|replace({'_': ' '})|capitalize }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Parcelle</span>
+                    <span class="value">{{ farm.parcels|length }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ── PREVISIONI 7 GIORNI ─────────────────────────────── #}
+    {% if forecast|length > 0 %}
+    <div class="card span-2">
+        <div class="card-header">
+            <span class="icon">📅</span>
+            Previsioni 7 Giorni
+        </div>
+        <div class="card-body">
+            <div class="chart-wrap" style="margin-bottom:1.25rem;">
+                <canvas id="forecastChart"></canvas>
+            </div>
+            <div class="forecast-row forecast-header">
+                <span>Data</span>
+                <span class="val">Max °C</span>
+                <span class="val">Min °C</span>
+                <span class="val">Pioggia</span>
+                <span class="val">ET₀</span>
+            </div>
+            {% for day in forecast %}
+            <div class="forecast-row">
+                <span class="date">{{ day.date|date('d/m') }}</span>
+                <span class="val" style="color:#c0392b;">{{ day.temp_max is not null ? day.temp_max|number_format(1) ~ '°' : '—' }}</span>
+                <span class="val" style="color:#2980b9;">{{ day.temp_min is not null ? day.temp_min|number_format(1) ~ '°' : '—' }}</span>
+                <span class="val">{{ day.rain is not null ? day.rain|number_format(1) ~ ' mm' : '—' }}</span>
+                <span class="val" style="color:var(--green-mid);">{{ day.et0 is not null ? day.et0|number_format(1) ~ ' mm' : '—' }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# ── PARCELLE ─────────────────────────────────────────── #}
+    {% if farm.parcels|length > 0 %}
+    <div class="card span-2">
+        <div class="card-header">
+            <span class="icon">🗺️</span>
+            Parcelle
+        </div>
+        <div class="card-body">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem;">
+                {% for parcel in farm.parcels %}
+                <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;">
+                    <div style="font-weight:700;color:var(--green-dark);margin-bottom:.5rem;">{{ parcel.name }}</div>
+                    <div style="font-size:.85rem;color:var(--text-muted);display:flex;flex-direction:column;gap:.25rem;">
+                        <span>🫒 {{ parcel.variety }}</span>
+                        <span>📐 {{ parcel.surface|number_format(1) }} ha · {{ parcel.treeCount }} piante</span>
+                        <span>🧭 Esp. {{ parcel.aspect ?? '—' }} · {{ parcel.altitude ?? '—' }} m</span>
+                        <span>🌿 {% if parcel.isBiological %}Biologico{% else %}Convenzionale{% endif %}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+{% if forecast|length > 0 %}
+<script>
+(function() {
+    const labels = {{ forecast|map(d => d.date|date('d/m'))|json_encode|raw }};
+    const tMax   = {{ forecast|map(d => d.temp_max)|json_encode|raw }};
+    const tMin   = {{ forecast|map(d => d.temp_min)|json_encode|raw }};
+    const rain   = {{ forecast|map(d => d.rain)|json_encode|raw }};
+
+    new Chart(document.getElementById('forecastChart'), {
+        data: {
+            labels,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: 'Pioggia (mm)',
+                    data: rain,
+                    backgroundColor: 'rgba(41,128,185,.35)',
+                    borderColor: 'rgba(41,128,185,.7)',
+                    borderWidth: 1,
+                    yAxisID: 'yRain',
+                    order: 2,
+                },
+                {
+                    type: 'line',
+                    label: 'Temp Max (°C)',
+                    data: tMax,
+                    borderColor: '#c0392b',
+                    backgroundColor: 'transparent',
+                    pointRadius: 3,
+                    tension: .3,
+                    yAxisID: 'yTemp',
+                    order: 1,
+                },
+                {
+                    type: 'line',
+                    label: 'Temp Min (°C)',
+                    data: tMin,
+                    borderColor: '#2980b9',
+                    backgroundColor: 'transparent',
+                    pointRadius: 3,
+                    tension: .3,
+                    yAxisID: 'yTemp',
+                    order: 1,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
+            scales: {
+                yTemp: { type: 'linear', position: 'left',  title: { display: true, text: '°C' } },
+                yRain: { type: 'linear', position: 'right', title: { display: true, text: 'mm' }, grid: { drawOnChartArea: false } },
+            },
+        },
+    });
+})();
+</script>
+{% endif %}
+{% endblock %}

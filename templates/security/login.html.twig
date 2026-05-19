@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accedi — Agritech Cammarata</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫒</text></svg>">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --green-dark: #2D5016;
+            --green-mid:  #4A7C2F;
+            --bg:         #F0F7E6;
+            --border:     #C8E0A8;
+            --radius:     12px;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .login-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 24px rgba(45,80,22,.12);
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+        }
+        .login-header {
+            background: var(--green-dark);
+            color: #fff;
+            padding: 2rem 1.5rem 1.5rem;
+            text-align: center;
+        }
+        .login-header .logo { font-size: 3rem; line-height: 1; display: block; margin-bottom: .5rem; }
+        .login-header h1 { font-size: 1.25rem; font-weight: 700; }
+        .login-header p { font-size: .8rem; opacity: .8; margin-top: .25rem; }
+        .login-body { padding: 1.75rem 1.5rem; }
+        .field { margin-bottom: 1rem; }
+        .field label { display: block; font-size: .82rem; font-weight: 600; color: var(--green-dark); margin-bottom: .35rem; }
+        .field input {
+            width: 100%;
+            padding: .65rem .85rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: .95rem;
+            outline: none;
+            transition: border-color .15s;
+            background: #fafff6;
+        }
+        .field input:focus { border-color: var(--green-mid); background: #fff; }
+        .btn-login {
+            width: 100%;
+            padding: .75rem;
+            background: var(--green-dark);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .15s;
+            margin-top: .25rem;
+        }
+        .btn-login:hover { background: var(--green-mid); }
+        .remember-row {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .82rem;
+            color: #555;
+            margin-bottom: 1.1rem;
+        }
+        .error-box {
+            background: #fdecea;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            border-radius: 8px;
+            padding: .65rem .85rem;
+            font-size: .875rem;
+            margin-bottom: 1rem;
+        }
+        .login-footer {
+            text-align: center;
+            font-size: .75rem;
+            color: #888;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="login-header">
+        <span class="logo">🫒</span>
+        <h1>Agritech Cammarata</h1>
+        <p>DSS per olivicoltura biologica mediterranea</p>
+    </div>
+    <div class="login-body">
+        {% if error %}
+        <div class="error-box">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <form method="post">
+            <div class="field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email"
+                       value="{{ last_username }}"
+                       autocomplete="email" autofocus required>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password"
+                       autocomplete="current-password" required>
+            </div>
+            <div class="remember-row">
+                <input type="checkbox" id="remember" name="_remember_me">
+                <label for="remember">Ricordami per 7 giorni</label>
+            </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <button class="btn-login" type="submit">Accedi</button>
+        </form>
+    </div>
+    <div class="login-footer">
+        Agritech Cammarata &copy; {{ 'now'|date('Y') }} — Olivicoltura biologica
+    </div>
+</div>
+
+</body>
+</html>
