@@ -1,3 +1,140 @@
+@import './components/cards.css';
+@import './components/forms.css';
+@import './components/charts.css';
+@import './dashboard.css';
+
+/* ── RESET ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── DESIGN TOKENS ───────────────────────────────────────── */
+:root {
+    --color-primary:   #2D5016;
+    --color-secondary: #4A7C2F;
+    --color-accent:    #C8972A;
+    --color-bg:        #F0F7E6;
+    --color-text:      #333333;
+    --color-white:     #FFFFFF;
+    --color-danger:    #DC3545;
+    --color-warning:   #FFC107;
+    --border-radius:   8px;
+    --shadow:          0 2px 8px rgba(0, 0, 0, 0.1);
+
+    /* derived / backward-compat aliases */
+    --color-text-muted: #5A7A45;
+    --color-border:     #C8E0A8;
+    --color-bg-card:    #FFFFFF;
+    --nav-h:            60px;
+}
+
+/* ── BASE ────────────────────────────────────────────────── */
 body {
-    background-color: skyblue;
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+}
+
+/* ── NAVBAR ──────────────────────────────────────────────── */
+.navbar {
+    background: var(--color-primary);
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    padding: 0 1.25rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-white);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+}
+
+.navbar-brand .olive { font-size: 1.4rem; }
+
+.navbar-nav {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: background 0.15s;
+}
+
+.nav-link:hover  { background: rgba(255, 255, 255, 0.15); color: var(--color-white); }
+.nav-link.active { background: var(--color-secondary); color: var(--color-white); }
+
+.nav-user {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    padding: 0.4rem 0.75rem;
+}
+
+.nav-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 0.25rem;
+}
+
+/* ── LAYOUT ──────────────────────────────────────────────── */
+.main-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 3rem;
+}
+
+/* ── FLASH MESSAGES ──────────────────────────────────────── */
+.flash {
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.flash-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.flash-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+.flash-error   { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+/* ── PAGE TITLE ──────────────────────────────────────────── */
+.page-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 1.25rem;
+}
+
+.page-title small {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--color-text-muted);
+    display: block;
+}
+
+/* ── EMPTY STATE ─────────────────────────────────────────── */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--color-text-muted);
+}
+
+.empty-state .emoji {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 0.75rem;
 }

@@ -48,12 +48,10 @@
                 </div>
             </div>
             {% if weather.time %}
-            <p style="text-align:right;font-size:.72rem;color:var(--text-muted);margin-top:.75rem;">
-                Rilevazione: {{ weather.time|replace({'T': ' '}) }}
-            </p>
+            <p class="weather-timestamp">Rilevazione: {{ weather.time|replace({'T': ' '}) }}</p>
             {% endif %}
             {% else %}
-            <p style="color:var(--text-muted);text-align:center;padding:1rem 0;">Dati meteo non disponibili.</p>
+            <p class="no-data">Dati meteo non disponibili.</p>
             {% endif %}
         </div>
     </div>
@@ -106,8 +104,13 @@
             Previsioni 7 Giorni
         </div>
         <div class="card-body">
-            <div class="chart-wrap" style="margin-bottom:1.25rem;">
-                <canvas id="forecastChart"></canvas>
+            <div class="chart-wrap">
+                <canvas id="forecast-chart"
+                    data-labels="{{ forecast|map(d => d.date|date('d/m'))|json_encode }}"
+                    data-tmax="{{ forecast|map(d => d.temp_max)|json_encode }}"
+                    data-tmin="{{ forecast|map(d => d.temp_min)|json_encode }}"
+                    data-rain="{{ forecast|map(d => d.rain)|json_encode }}">
+                </canvas>
             </div>
             <div class="forecast-row forecast-header">
                 <span>Data</span>
@@ -119,10 +122,10 @@
             {% for day in forecast %}
             <div class="forecast-row">
                 <span class="date">{{ day.date|date('d/m') }}</span>
-                <span class="val" style="color:#c0392b;">{{ day.temp_max is not null ? day.temp_max|number_format(1) ~ '°' : '—' }}</span>
-                <span class="val" style="color:#2980b9;">{{ day.temp_min is not null ? day.temp_min|number_format(1) ~ '°' : '—' }}</span>
+                <span class="val val-hot">{{ day.temp_max is not null ? day.temp_max|number_format(1) ~ '°' : '—' }}</span>
+                <span class="val val-cold">{{ day.temp_min is not null ? day.temp_min|number_format(1) ~ '°' : '—' }}</span>
                 <span class="val">{{ day.rain is not null ? day.rain|number_format(1) ~ ' mm' : '—' }}</span>
-                <span class="val" style="color:var(--green-mid);">{{ day.et0 is not null ? day.et0|number_format(1) ~ ' mm' : '—' }}</span>
+                <span class="val val-green">{{ day.et0 is not null ? day.et0|number_format(1) ~ ' mm' : '—' }}</span>
             </div>
             {% endfor %}
         </div>
@@ -137,11 +140,11 @@
             Parcelle
         </div>
         <div class="card-body">
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem;">
+            <div class="parcels-grid">
                 {% for parcel in farm.parcels %}
-                <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;">
-                    <div style="font-weight:700;color:var(--green-dark);margin-bottom:.5rem;">{{ parcel.name }}</div>
-                    <div style="font-size:.85rem;color:var(--text-muted);display:flex;flex-direction:column;gap:.25rem;">
+                <div class="parcel-card">
+                    <div class="parcel-name">{{ parcel.name }}</div>
+                    <div class="parcel-details">
                         <span>🫒 {{ parcel.variety }}</span>
                         <span>📐 {{ parcel.surface|number_format(1) }} ha · {{ parcel.treeCount }} piante</span>
                         <span>🧭 Esp. {{ parcel.aspect ?? '—' }} · {{ parcel.altitude ?? '—' }} m</span>
@@ -155,67 +158,5 @@
     {% endif %}
 
 </div>
-{% endif %}
-{% endblock %}
-
-{% block javascripts %}
-{% if forecast|length > 0 %}
-<script>
-(function() {
-    const labels = {{ forecast|map(d => d.date|date('d/m'))|json_encode|raw }};
-    const tMax   = {{ forecast|map(d => d.temp_max)|json_encode|raw }};
-    const tMin   = {{ forecast|map(d => d.temp_min)|json_encode|raw }};
-    const rain   = {{ forecast|map(d => d.rain)|json_encode|raw }};
-
-    new Chart(document.getElementById('forecastChart'), {
-        data: {
-            labels,
-            datasets: [
-                {
-                    type: 'bar',
-                    label: 'Pioggia (mm)',
-                    data: rain,
-                    backgroundColor: 'rgba(41,128,185,.35)',
-                    borderColor: 'rgba(41,128,185,.7)',
-                    borderWidth: 1,
-                    yAxisID: 'yRain',
-                    order: 2,
-                },
-                {
-                    type: 'line',
-                    label: 'Temp Max (°C)',
-                    data: tMax,
-                    borderColor: '#c0392b',
-                    backgroundColor: 'transparent',
-                    pointRadius: 3,
-                    tension: .3,
-                    yAxisID: 'yTemp',
-                    order: 1,
-                },
-                {
-                    type: 'line',
-                    label: 'Temp Min (°C)',
-                    data: tMin,
-                    borderColor: '#2980b9',
-                    backgroundColor: 'transparent',
-                    pointRadius: 3,
-                    tension: .3,
-                    yAxisID: 'yTemp',
-                    order: 1,
-                },
-            ],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
-            scales: {
-                yTemp: { type: 'linear', position: 'left',  title: { display: true, text: '°C' } },
-                yRain: { type: 'linear', position: 'right', title: { display: true, text: 'mm' }, grid: { drawOnChartArea: false } },
-            },
-        },
-    });
-})();
-</script>
 {% endif %}
 {% endblock %}

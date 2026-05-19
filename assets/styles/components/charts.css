@@ -1,0 +1,11 @@
+/* ── CHART CONTAINER ─────────────────────────────────────── */
+.chart-wrap {
+    position: relative;
+    height: 200px;
+    margin-bottom: 1.25rem;
+}
+
+/* Taller chart on wider screens */
+@media (min-width: 768px) {
+    .chart-wrap { height: 240px; }
+}

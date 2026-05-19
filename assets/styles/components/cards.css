@@ -1,0 +1,80 @@
+/* ── CARD ────────────────────────────────────────────────── */
+.card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.card-header {
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.card-header .icon { font-size: 1.1rem; }
+
+.card-body { padding: 1.25rem; }
+
+/* ── STAT GRID ───────────────────────────────────────────── */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+@media (min-width: 480px) {
+    .stat-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.stat-box {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+}
+
+.stat-icon  { font-size: 1.6rem; line-height: 1; }
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0.25rem 0 0.1rem;
+    line-height: 1.1;
+}
+
+.stat-label {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ── INFO LIST ───────────────────────────────────────────── */
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    font-size: 0.9rem;
+}
+
+.info-row .label { color: var(--color-text-muted); font-size: 0.82rem; }
+.info-row .value { font-weight: 600; color: var(--color-primary); }

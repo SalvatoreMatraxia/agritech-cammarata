@@ -1,0 +1,85 @@
+/* ── DASHBOARD GRID ──────────────────────────────────────── */
+.dashboard-grid {
+    display: grid;
+    gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .dashboard-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.span-2 { grid-column: 1 / -1; }
+
+/* ── WEATHER METADATA ────────────────────────────────────── */
+.weather-timestamp {
+    text-align: right;
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    margin-top: 0.75rem;
+}
+
+.no-data {
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 1rem 0;
+}
+
+/* ── FORECAST TABLE ──────────────────────────────────────── */
+.forecast-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 1fr 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: var(--border-radius);
+    font-size: 0.85rem;
+    align-items: center;
+}
+
+.forecast-row:nth-child(odd) { background: var(--color-bg); }
+
+.forecast-row .date {
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.forecast-row .val { text-align: right; }
+
+.forecast-header {
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ── FORECAST VALUE COLORS ───────────────────────────────── */
+.val-hot   { color: #c0392b; }
+.val-cold  { color: #2980b9; }
+.val-green { color: var(--color-secondary); }
+
+/* ── PARCELS GRID ────────────────────────────────────────── */
+.parcels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+}
+
+.parcel-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.parcel-name {
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.parcel-details {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
