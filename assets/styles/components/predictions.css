@@ -1,0 +1,181 @@
+/* ── PREDICTION CARD SHARED ──────────────────────────────── */
+.prediction-empty {
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 1.5rem 0;
+    font-size: 0.9rem;
+}
+
+.prediction-meta {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 0.5rem;
+    text-align: right;
+}
+
+.update-btn {
+    display: inline-block;
+    background: var(--color-secondary);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 0.45rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.update-btn:hover { background: var(--color-primary); }
+
+.card-footer {
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ── EXPLANATION BOX ─────────────────────────────────────── */
+.explanation-box {
+    background: #f0f7e6;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-secondary);
+    border-radius: var(--border-radius);
+    padding: 0.65rem 0.9rem;
+    font-size: 0.82rem;
+    color: var(--color-text);
+    margin-top: 0.75rem;
+    line-height: 1.5;
+}
+
+/* ── RISK BADGE ──────────────────────────────────────────── */
+.risk-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 20px;
+    padding: 0.3rem 0.9rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.risk-low    { background: #d4edda; color: #155724; }
+.risk-medium { background: #fff3cd; color: #856404; }
+.risk-high   { background: #ffe5cc; color: #7a3800; }
+.risk-very-high { background: #f8d7da; color: #721c24; }
+
+.risk-score-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+/* ── STRESS BAR ──────────────────────────────────────────── */
+.stress-bar-wrap {
+    margin: 0.75rem 0;
+}
+
+.stress-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.3rem;
+}
+
+.stress-bar {
+    height: 10px;
+    border-radius: 5px;
+    background: var(--color-border);
+    overflow: hidden;
+}
+
+.stress-bar-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.4s ease;
+}
+
+.stress-fill-none   { background: #28a745; }
+.stress-fill-low    { background: #90d83b; }
+.stress-fill-medium { background: var(--color-warning); }
+.stress-fill-high   { background: #fd7e14; }
+.stress-fill-severe { background: var(--color-danger); }
+
+/* reserve bar (inverted — green=full, red=empty) */
+.reserve-bar-fill {
+    height: 100%;
+    border-radius: 5px;
+    background: linear-gradient(90deg, var(--color-danger) 0%, var(--color-warning) 40%, #28a745 100%);
+    transition: width 0.4s ease;
+}
+
+/* ── SCENARIOS BOX ───────────────────────────────────────── */
+.scenarios-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.scenario-box {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 0.65rem 0.5rem;
+    text-align: center;
+}
+
+.scenario-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.scenario-value {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.scenario-sub {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+}
+
+/* ── RECOMMENDATION LIST ─────────────────────────────────── */
+.recommendation-list {
+    list-style: none;
+    margin-top: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.recommendation-list li {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.65rem;
+    background: var(--color-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+/* ── IRRIGATION ALERT ────────────────────────────────────── */
+.irrigation-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--border-radius);
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-top: 0.6rem;
+}
+
+.irrigation-needed    { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+.irrigation-ok        { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }

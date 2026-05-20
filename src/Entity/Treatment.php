@@ -63,6 +63,10 @@ class Treatment
     #[ORM\JoinColumn(nullable: false)]
     private ?Parcel $parcel = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?OrganicProduct $organicProduct = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -117,4 +121,7 @@ class Treatment
 
     public function getParcel(): ?Parcel { return $this->parcel; }
     public function setParcel(?Parcel $parcel): static { $this->parcel = $parcel; return $this; }
+
+    public function getOrganicProduct(): ?OrganicProduct { return $this->organicProduct; }
+    public function setOrganicProduct(?OrganicProduct $organicProduct): static { $this->organicProduct = $organicProduct; return $this; }
 }

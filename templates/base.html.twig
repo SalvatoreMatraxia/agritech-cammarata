@@ -16,10 +16,14 @@
         <span class="olive">🫒</span> Agritech Cammarata
     </a>
     <div class="navbar-nav">
-        <span class="nav-user">{{ app.user.email }}</span>
-        <div class="nav-divider"></div>
         <a class="nav-link {% if app.request.attributes.get('_route') starts with 'dashboard' %}active{% endif %}"
            href="{{ path('dashboard_index') }}">Dashboard</a>
+        <a class="nav-link {% if app.request.attributes.get('_route') starts with 'treatment' %}active{% endif %}"
+           href="{{ path('treatment_index') }}">Quaderno</a>
+        <a class="nav-link {% if app.request.attributes.get('_route') starts with 'operation' %}active{% endif %}"
+           href="{{ path('operation_index') }}">Operazioni</a>
+        <div class="nav-divider"></div>
+        <span class="nav-user">{{ app.user.email }}</span>
         <a class="nav-link" href="{{ path('app_logout') }}">Esci</a>
     </div>
 </nav>

@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuova Operazione Colturale — Agritech Cammarata{% endblock %}
+
+{% block body %}
+<div class="page-title">
+    Registra Operazione Colturale
+    <small><a href="{{ path('operation_index') }}">← Registro Operazioni</a></small>
+</div>
+
+<div class="form-card">
+<form method="post" action="{{ path('operation_new') }}" class="two-col-form">
+    <input type="hidden" name="_token" value="{{ csrf_token('operation_new') }}">
+
+    <div class="form-group">
+        <label class="form-label" for="date">Data *</label>
+        <input type="date" name="date" id="date" class="form-control" required value="{{ 'now'|date('Y-m-d') }}">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="type">Tipo di operazione *</label>
+        <select name="type" id="type" class="form-control" required>
+            <option value="">— Seleziona —</option>
+            {% for key, t in types %}
+            <option value="{{ key }}">{{ t.icon }} {{ t.label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="parcel_id">Parcella *</label>
+        <select name="parcel_id" id="parcel_id" class="form-control" required>
+            <option value="">— Seleziona parcella —</option>
+            {% for parcel in farm.parcels %}
+            <option value="{{ parcel.id }}">{{ parcel.name }} ({{ parcel.surface|number_format(1) }} ha)</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="operator">Operatore</label>
+        <input type="text" name="operator" id="operator" class="form-control" placeholder="Nome operatore">
+    </div>
+
+    <div class="form-group span-2">
+        <label class="form-label" for="description">Descrizione</label>
+        <textarea name="description" id="description" class="form-control" rows="3"
+                  placeholder="Descrivi l'operazione svolta..."></textarea>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="duration_hours">Durata (ore)</label>
+        <input type="number" name="duration_hours" id="duration_hours" class="form-control" step="0.5" min="0">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="cost_eur">Costo (€)</label>
+        <input type="number" name="cost_eur" id="cost_eur" class="form-control" step="0.01" min="0">
+    </div>
+
+    <div class="form-group span-2">
+        <label class="form-label" for="notes">Note</label>
+        <textarea name="notes" id="notes" class="form-control" rows="2"></textarea>
+    </div>
+
+    <div class="form-actions span-2">
+        <button type="submit" class="btn-primary">Registra Operazione</button>
+        <a href="{{ path('operation_index') }}" class="btn-secondary">Annulla</a>
+    </div>
+</form>
+</div>
+{% endblock %}

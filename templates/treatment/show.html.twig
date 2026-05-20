@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trattamento {{ treatment.date|date('d/m/Y') }} — Quaderno{% endblock %}
+
+{% block body %}
+<div class="page-title">
+    Trattamento del {{ treatment.date|date('d/m/Y') }}
+    <small><a href="{{ path('treatment_index') }}">← Quaderno di Campagna</a></small>
+</div>
+
+<div class="detail-grid">
+    <div class="card">
+        <div class="card-header"><span class="icon">🧴</span> Prodotto</div>
+        <div class="card-body">
+            <div class="info-list">
+                <div class="info-row"><span class="label">Nome commerciale</span><span class="value">{{ treatment.productName }}</span></div>
+                <div class="info-row"><span class="label">Principio attivo</span><span class="value">{{ treatment.activeSubstance }}</span></div>
+                <div class="info-row">
+                    <span class="label">Conformità biologica</span>
+                    <span class="value">
+                        {% if treatment.isOrganic %}<span class="badge badge-organic">Conforme Bio ✓</span>{% else %}<span class="badge badge-nonorganic">Non Conforme</span>{% endif %}
+                    </span>
+                </div>
+                {% if treatment.organicProduct %}
+                <div class="info-row"><span class="label">Reg. n°</span><span class="value">{{ treatment.organicProduct.registrationNumber ?? '—' }}</span></div>
+                <div class="info-row"><span class="label">Tempo carenza</span><span class="value">{{ treatment.organicProduct.waitingDays }} giorni</span></div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><span class="icon">📐</span> Applicazione</div>
+        <div class="card-body">
+            <div class="info-list">
+                <div class="info-row"><span class="label">Data</span><span class="value">{{ treatment.date|date('d/m/Y') }}</span></div>
+                <div class="info-row"><span class="label">Parcella</span><span class="value">{{ treatment.parcel.name }}</span></div>
+                <div class="info-row"><span class="label">Superficie</span><span class="value">{{ treatment.parcel.surface|number_format(1) }} ha</span></div>
+                <div class="info-row"><span class="label">Dose</span><span class="value">{{ treatment.dosePerHa|number_format(2) }} {{ treatment.doseUnit }}</span></div>
+                <div class="info-row"><span class="label">Quantità totale</span><span class="value">{{ treatment.totalQuantity ? treatment.totalQuantity|number_format(2) ~ ' kg/L' : '—' }}</span></div>
+                <div class="info-row"><span class="label">Avversità</span><span class="value">{{ treatment.targetPest }}</span></div>
+                <div class="info-row"><span class="label">Metodo</span><span class="value">{{ treatment.applicationMethod ?? '—' }}</span></div>
+                <div class="info-row"><span class="label">Meteo</span><span class="value">{{ treatment.weatherConditions ?? '—' }}</span></div>
+                <div class="info-row"><span class="label">Operatore</span><span class="value">{{ treatment.operator ?? '—' }}</span></div>
+            </div>
+        </div>
+    </div>
+
+    {% if efficacy is not null %}
+    <div class="card">
+        <div class="card-header"><span class="icon">📊</span> Efficacia Attuale</div>
+        <div class="card-body">
+            {% set eff = efficacy %}
+            <div class="efficacy-large {{ eff >= 60 ? 'eff-high' : (eff >= 30 ? 'eff-medium' : 'eff-low') }}">
+                {{ eff|number_format(1) }}%
+            </div>
+            <div class="stress-bar" style="margin-top: 0.75rem;">
+                <div class="stress-bar-fill {{ eff >= 60 ? 'stress-fill-none' : (eff >= 30 ? 'stress-fill-medium' : 'stress-fill-severe') }}" style="width: {{ eff }}%"></div>
+            </div>
+            {% if eff < 30 %}
+            <div class="irrigation-alert irrigation-needed" style="margin-top: 0.75rem;">
+                Efficacia sotto soglia — valutare ritrattamento
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if treatment.notes %}
+    <div class="card">
+        <div class="card-header"><span class="icon">📝</span> Note</div>
+        <div class="card-body">{{ treatment.notes }}</div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

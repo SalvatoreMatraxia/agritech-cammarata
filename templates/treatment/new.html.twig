@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuovo Trattamento — Quaderno di Campagna{% endblock %}
+
+{% block body %}
+<div class="page-title">
+    Registra Trattamento
+    <small><a href="{{ path('treatment_index') }}">← Quaderno di Campagna</a></small>
+</div>
+
+<div class="form-card">
+
+<form method="post" action="{{ path('treatment_new') }}" class="two-col-form" id="treatment-form">
+    <input type="hidden" name="_token" value="{{ csrf_token('treatment_new') }}">
+
+    <div class="form-section span-2">
+        <h3 class="form-section-title">Prodotto e Parcella</h3>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="product_id">Prodotto ammesso (biologico) *</label>
+        <select name="product_id" id="product_id" class="form-control" required
+                data-products="{{ products|map(p => {
+                    id: p.id,
+                    substance: p.activeSubstance,
+                    dose: p.maxDosePerHa,
+                    unit: 'kg/ha',
+                    organic: p.isAllowedOrganic,
+                    waiting: p.waitingDays
+                })|json_encode }}">
+            <option value="">— Seleziona prodotto —</option>
+            {% for product in products %}
+            <option value="{{ product.id }}"
+                    data-substance="{{ product.activeSubstance }}"
+                    data-dose="{{ product.maxDosePerHa }}"
+                    data-unit="kg/ha"
+                    data-organic="{{ product.isAllowedOrganic ? '1' : '0' }}"
+                    data-waiting="{{ product.waitingDays }}">
+                {{ product.commercialName }} — {{ product.activeSubstance }}
+            </option>
+            {% endfor %}
+        </select>
+        <div id="organic-badge" class="organic-badge-wrap" style="display:none"></div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="parcel_id">Parcella *</label>
+        <select name="parcel_id" id="parcel_id" class="form-control" required>
+            <option value="">— Seleziona parcella —</option>
+            {% for parcel in farm.parcels %}
+            <option value="{{ parcel.id }}">{{ parcel.name }} ({{ parcel.surface|number_format(1) }} ha — {{ parcel.variety }})</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="active_substance">Principio Attivo *</label>
+        <input type="text" name="active_substance" id="active_substance" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="date">Data Trattamento *</label>
+        <input type="date" name="date" id="date" class="form-control" required value="{{ 'now'|date('Y-m-d') }}">
+    </div>
+
+    <div class="form-section span-2">
+        <h3 class="form-section-title">Dose e Quantità</h3>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="dose_per_ha">Dose per ettaro *</label>
+        <div class="input-group">
+            <input type="number" name="dose_per_ha" id="dose_per_ha" class="form-control" step="0.01" min="0" required>
+            <select name="dose_unit" class="form-control-unit">
+                <option value="kg/ha">kg/ha</option>
+                <option value="L/ha">L/ha</option>
+                <option value="g/ha">g/ha</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="total_quantity">Quantità totale utilizzata</label>
+        <div class="input-group">
+            <input type="number" name="total_quantity" id="total_quantity" class="form-control" step="0.01" min="0">
+            <span class="input-addon">kg/L</span>
+        </div>
+    </div>
+
+    <div class="form-section span-2">
+        <h3 class="form-section-title">Applicazione</h3>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="target_pest">Avversità / Patogeno target *</label>
+        <input type="text" name="target_pest" id="target_pest" class="form-control" required
+               placeholder="es. Bactrocera oleae, Colletotrichum, Occhio di pavone">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="application_method">Metodo di applicazione</label>
+        <select name="application_method" id="application_method" class="form-control">
+            <option value="">— Seleziona —</option>
+            <option value="Atomizzatore">Atomizzatore</option>
+            <option value="Barre irroratrici">Barre irroratrici</option>
+            <option value="Irrorazione fogliare a mano">Irrorazione fogliare a mano</option>
+            <option value="Polverizzatore dorsale">Polverizzatore dorsale</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="weather_conditions">Condizioni meteo al trattamento</label>
+        <input type="text" name="weather_conditions" id="weather_conditions" class="form-control"
+               placeholder="es. Soleggiato, 22°C, vento assente">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="operator">Operatore</label>
+        <input type="text" name="operator" id="operator" class="form-control"
+               placeholder="Nome e cognome operatore">
+    </div>
+
+    <div class="form-group span-2">
+        <label class="form-label" for="notes">Note aggiuntive</label>
+        <textarea name="notes" id="notes" class="form-control" rows="3"
+                  placeholder="Osservazioni, efficacia attesa, ecc."></textarea>
+    </div>
+
+    <div class="form-actions span-2">
+        <button type="submit" class="btn-primary">Registra nel Quaderno</button>
+        <a href="{{ path('treatment_index') }}" class="btn-secondary">Annulla</a>
+    </div>
+</form>
+
+</div>
+{% endblock %}

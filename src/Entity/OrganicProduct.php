@@ -35,6 +35,15 @@ class OrganicProduct
     #[ORM\Column(nullable: true)]
     private ?float $costPerHa = null;
 
+    #[ORM\Column]
+    private int $halfLifeDays = 7;
+
+    #[ORM\Column]
+    private float $washOffMm = 15.0;
+
+    #[ORM\Column]
+    private float $reTreatmentThreshold = 0.30;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
@@ -60,6 +69,15 @@ class OrganicProduct
 
     public function getCostPerHa(): ?float { return $this->costPerHa; }
     public function setCostPerHa(?float $costPerHa): static { $this->costPerHa = $costPerHa; return $this; }
+
+    public function getHalfLifeDays(): int { return $this->halfLifeDays; }
+    public function setHalfLifeDays(int $halfLifeDays): static { $this->halfLifeDays = $halfLifeDays; return $this; }
+
+    public function getWashOffMm(): float { return $this->washOffMm; }
+    public function setWashOffMm(float $washOffMm): static { $this->washOffMm = $washOffMm; return $this; }
+
+    public function getReTreatmentThreshold(): float { return $this->reTreatmentThreshold; }
+    public function setReTreatmentThreshold(float $reTreatmentThreshold): static { $this->reTreatmentThreshold = $reTreatmentThreshold; return $this; }
 
     public function getNotes(): ?string { return $this->notes; }
     public function setNotes(?string $notes): static { $this->notes = $notes; return $this; }

@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Operazioni Colturali — Agritech Cammarata{% endblock %}
+
+{% block body %}
+<div class="page-title">
+    Registro Operazioni Colturali
+    <small>Tutte le attività agronomiche dell'azienda</small>
+</div>
+
+{% if farm is null %}
+<div class="empty-state">
+    <span class="emoji">🌿</span>
+    Nessuna azienda configurata.
+</div>
+{% else %}
+
+<div class="toolbar">
+    <div class="toolbar-left">
+        <a class="btn-primary" href="{{ path('operation_new') }}">+ Nuova Operazione</a>
+    </div>
+    <div class="toolbar-right">
+        <form method="get" class="filter-form">
+            <select name="type" onchange="this.form.submit()" class="form-control-sm">
+                <option value="">Tutte le operazioni</option>
+                {% for key, t in types %}
+                <option value="{{ key }}" {% if activeType == key %}selected{% endif %}>{{ t.icon }} {{ t.label }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+</div>
+
+{% if operations|length == 0 %}
+<div class="empty-state">
+    <span class="emoji">🌿</span>
+    Nessuna operazione registrata.
+    <a href="{{ path('operation_new') }}">Registra la prima operazione</a>
+</div>
+{% else %}
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Parcella</th>
+                    <th>Descrizione</th>
+                    <th>Durata (h)</th>
+                    <th>Operatore</th>
+                    <th>Costo (€)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for op in operations %}
+                {% set typeInfo = types[op.type] ?? {label: op.type, icon: '🌿'} %}
+                <tr>
+                    <td class="td-date">{{ op.date|date('d/m/Y') }}</td>
+                    <td>
+                        <span class="op-type-badge">{{ typeInfo.icon }} {{ typeInfo.label }}</span>
+                    </td>
+                    <td>{{ op.parcel.name }}</td>
+                    <td class="td-desc">{{ op.description ?? '—' }}</td>
+                    <td class="td-center">{{ op.durationHours ? op.durationHours|number_format(1) : '—' }}</td>
+                    <td class="td-muted">{{ op.operator ?? '—' }}</td>
+                    <td class="td-center">{{ op.costEur ? op.costEur|number_format(2) : '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if pages > 1 %}
+<div class="pagination">
+    {% if page > 1 %}<a href="{{ path('operation_index', {page: page - 1, type: activeType}) }}" class="page-link">‹ Prec.</a>{% endif %}
+    <span class="page-info">Pagina {{ page }} di {{ pages }} ({{ total }} operazioni)</span>
+    {% if page < pages %}<a href="{{ path('operation_index', {page: page + 1, type: activeType}) }}" class="page-link">Succ. ›</a>{% endif %}
+</div>
+{% else %}
+<p class="table-summary">{{ total }} operazione{% if total != 1 %}i{% endif %} registrata{% if total != 1 %}e{% endif %}</p>
+{% endif %}
+
+{% endif %}
+{% endif %}
+{% endblock %}

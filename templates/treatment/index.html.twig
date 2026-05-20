@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quaderno di Campagna — Agritech Cammarata{% endblock %}
+
+{% block body %}
+<div class="page-title">
+    Quaderno di Campagna
+    <small>Registro trattamenti fitosanitari — D.Lgs 150/2012</small>
+</div>
+
+{% if farm is null %}
+<div class="empty-state">
+    <span class="emoji">📋</span>
+    Nessuna azienda configurata.
+</div>
+{% else %}
+
+<div class="toolbar">
+    <div class="toolbar-left">
+        <a class="btn-primary" href="{{ path('treatment_new') }}">+ Nuovo Trattamento</a>
+        <a class="btn-secondary" href="{{ path('treatment_export_pdf') }}" target="_blank">Esporta PDF Quaderno</a>
+    </div>
+    <div class="toolbar-right">
+        <form method="get" class="filter-form">
+            <select name="parcel" onchange="this.form.submit()" class="form-control-sm">
+                <option value="">Tutte le parcelle</option>
+                {% for parcel in farm.parcels %}
+                <option value="{{ parcel.id }}" {% if parcelId == parcel.id %}selected{% endif %}>{{ parcel.name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+</div>
+
+{% if treatments|length == 0 %}
+<div class="empty-state">
+    <span class="emoji">📋</span>
+    Nessun trattamento registrato.
+    <a href="{{ path('treatment_new') }}">Registra il primo trattamento</a>
+</div>
+{% else %}
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Parcella</th>
+                    <th>Prodotto</th>
+                    <th>Principio Attivo</th>
+                    <th>Dose</th>
+                    <th>Avversità</th>
+                    <th>Operatore</th>
+                    <th>Conformità</th>
+                    <th>Efficacia</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for treatment in treatments %}
+                <tr>
+                    <td class="td-date">{{ treatment.date|date('d/m/Y') }}</td>
+                    <td>{{ treatment.parcel.name }}</td>
+                    <td class="td-product">{{ treatment.productName }}</td>
+                    <td class="td-muted">{{ treatment.activeSubstance }}</td>
+                    <td class="td-nowrap">{{ treatment.dosePerHa|number_format(2) }} {{ treatment.doseUnit }}</td>
+                    <td>{{ treatment.targetPest }}</td>
+                    <td class="td-muted">{{ treatment.operator ?? '—' }}</td>
+                    <td>
+                        {% if treatment.isOrganic %}
+                        <span class="badge badge-organic">Bio ✓</span>
+                        {% else %}
+                        <span class="badge badge-nonorganic">Non Bio</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% set eff = efficacies[treatment.id] %}
+                        {% if eff is not null %}
+                        <div class="efficacy-bar-wrap">
+                            <div class="efficacy-bar {{ eff >= 60 ? 'eff-high' : (eff >= 30 ? 'eff-medium' : 'eff-low') }}"
+                                 style="width: {{ eff }}%"></div>
+                        </div>
+                        <span class="efficacy-val">{{ eff|number_format(0) }}%</span>
+                        {% else %}
+                        <span class="td-muted">—</span>
+                        {% endif %}
+                    </td>
+                    <td><a href="{{ path('treatment_show', {id: treatment.id}) }}" class="btn-link">Dettaglio</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if pages > 1 %}
+<div class="pagination">
+    {% if page > 1 %}<a href="{{ path('treatment_index', {page: page - 1, parcel: parcelId}) }}" class="page-link">‹ Prec.</a>{% endif %}
+    <span class="page-info">Pagina {{ page }} di {{ pages }} ({{ total }} trattamenti)</span>
+    {% if page < pages %}<a href="{{ path('treatment_index', {page: page + 1, parcel: parcelId}) }}" class="page-link">Succ. ›</a>{% endif %}
+</div>
+{% else %}
+<p class="table-summary">{{ total }} trattamento{% if total != 1 %}i{% endif %} registrato{% if total != 1 %}i{% endif %}</p>
+{% endif %}
+
+{% endif %}
+{% endif %}
+{% endblock %}
