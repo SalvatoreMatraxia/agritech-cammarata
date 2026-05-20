@@ -1,0 +1,21 @@
+anno,provincia,superficie_ha,produzione_t,resa_kg_ha,pioggia_annua_mm,pioggia_primavera_mm,temp_media_annua,temp_media_estate,temp_media_primavera,et0_estate,giorni_gelo,giorni_caldo,note
+2005,Agrigento,16000,56000,3500,718,234,14.8,22.4,11.8,502,14,0,Anno normale
+2006,Agrigento,15800,28000,1772,468,152,15.1,23.6,12.4,528,8,1,Siccità estiva grave
+2007,Agrigento,15600,64000,4103,762,248,14.5,21.8,11.5,488,16,0,Ottimo anno
+2008,Agrigento,15400,32000,2078,602,168,14.9,22.8,12.0,514,11,0,Pressione mosca olearia
+2009,Agrigento,15200,58000,3816,710,228,14.6,21.9,11.6,492,13,0,Anno favorevole
+2010,Agrigento,15000,24000,1600,826,220,13.3,21.6,10.5,473,19,0,Gelate tardive primaverili
+2011,Agrigento,14800,52000,3514,550,164,13.8,21.3,11.1,490,19,0,Buona stagione
+2012,Agrigento,14600,30000,2055,628,176,13.9,23.2,11.2,532,33,5,Caldo record agosto
+2013,Agrigento,14400,55000,3819,640,202,13.7,21.1,11.0,482,21,0,Anno molto buono
+2014,Agrigento,14200,22000,1549,602,196,14.2,21.3,12.0,487,11,0,Eccesso piogge+malattie
+2015,Agrigento,14000,48000,3429,781,244,14.4,21.8,11.8,499,19,0,Anno nella norma
+2016,Agrigento,13800,20000,1449,502,138,14.5,21.9,11.8,504,15,0,Siccità primavera-estate
+2017,Agrigento,13600,46000,3382,450,100,15.1,23.7,12.5,534,12,5,Siccità grave+caldo
+2018,Agrigento,13400,18000,1343,1089,244,14.2,21.7,11.0,494,1,0,Eccesso piogge autunno
+2019,Agrigento,13200,44000,3333,736,218,15.1,24.0,12.8,549,11,0,Estate calda
+2020,Agrigento,13000,50000,3846,540,168,14.8,22.3,12.4,508,0,0,Anno buono senza gelo
+2021,Agrigento,12800,24000,1875,816,228,15.1,24.6,13.4,548,4,13,Estate record+mosca
+2022,Agrigento,12600,46000,3651,413,59,15.6,24.8,13.1,568,2,3,Siccità grave primaverile
+2023,Agrigento,12400,20000,1613,578,178,15.2,23.3,12.7,536,7,11,Estate calda+siccità
+2024,Agrigento,12200,42000,3443,546,160,15.4,24.9,13.1,557,0,5,Estate molto calda
