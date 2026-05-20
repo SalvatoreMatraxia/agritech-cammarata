@@ -50,10 +50,12 @@
                 {% endif %}
             </div>
             {% if parcel.history|length > 0 %}
-            <canvas class="ndvi-sparkline"
-                data-history="{{ parcel.history|map(h => h.ndvi)|json_encode }}"
-                data-labels="{{ parcel.history|map(h => h.date)|json_encode }}"
-                height="40"></canvas>
+            <div class="sparkline-wrapper">
+                <canvas class="ndvi-sparkline"
+                    data-chart="ndvi"
+                    data-history="{{ parcel.history|map(h => h.ndvi)|json_encode }}"
+                    data-labels="{{ parcel.history|map(h => h.date)|json_encode }}"></canvas>
+            </div>
             {% endif %}
             {% else %}
             <div class="ndvi-sidebar-value no-data">NDVI non disponibile</div>

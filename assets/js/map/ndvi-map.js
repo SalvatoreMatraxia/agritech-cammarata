@@ -47,7 +47,8 @@ function buildSparkline(canvas, labels, values) {
             }],
         },
         options: {
-            responsive: false,
+            responsive: true,
+            maintainAspectRatio: false,
             animation: false,
             plugins: { legend: { display: false }, tooltip: { enabled: false } },
             scales: {
@@ -71,8 +72,6 @@ function initSidebarSparklines() {
         canvas._sparkinit = true;
         const values = JSON.parse(canvas.dataset.history || '[]');
         const labels = JSON.parse(canvas.dataset.labels  || '[]');
-        canvas.width  = canvas.parentElement.clientWidth || 220;
-        canvas.height = parseInt(canvas.getAttribute('height') || '40', 10);
         buildSparkline(canvas, labels, values);
     });
 }

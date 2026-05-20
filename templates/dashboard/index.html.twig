@@ -106,6 +106,7 @@
         <div class="card-body">
             <div class="chart-wrap">
                 <canvas id="forecast-chart"
+                    data-chart="weather"
                     data-labels="{{ forecast|map(d => d.date|date('d/m'))|json_encode }}"
                     data-tmax="{{ forecast|map(d => d.temp_max)|json_encode }}"
                     data-tmin="{{ forecast|map(d => d.temp_min)|json_encode }}"
@@ -157,10 +158,12 @@
                 <span class="ndvi-source">{{ ndvi.source == 'agromonitoring' ? 'Satellite' : 'Stimato ET₀' }}</span>
             </div>
             {% if ndvi.ndvi_history|length > 0 %}
-            <canvas class="ndvi-sparkline ndvi-sparkline-dash"
-                data-history="{{ ndvi.ndvi_history|map(h => h.ndvi)|slice(-30)|json_encode }}"
-                data-labels="{{ ndvi.ndvi_history|map(h => h.date)|slice(-30)|json_encode }}"
-                height="50"></canvas>
+            <div class="sparkline-wrapper">
+                <canvas class="ndvi-sparkline ndvi-sparkline-dash"
+                    data-chart="ndvi"
+                    data-history="{{ ndvi.ndvi_history|map(h => h.ndvi)|slice(-30)|json_encode }}"
+                    data-labels="{{ ndvi.ndvi_history|map(h => h.date)|slice(-30)|json_encode }}"></canvas>
+            </div>
             {% endif %}
             <div class="ndvi-range">
                 Min 90gg: <strong>{{ ndvi.ndvi_min_90d|number_format(3) }}</strong> ·

@@ -183,14 +183,22 @@
 .map-sidebar.collapsed ~ .map-wrap .sidebar-open-btn { display: block; }
 
 /* ── SPARKLINE ───────────────────────────────────────────── */
-.ndvi-sparkline {
-    display: block;
+.sparkline-wrapper {
     width: 100%;
-    margin-top: 0.25rem;
+    height: 80px;
+    position: relative;
+    margin-top: 0.35rem;
+}
+
+.sparkline-wrapper canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .ndvi-sparkline-dash {
-    margin-top: 0.5rem;
     border-radius: 4px;
     background: var(--color-bg);
 }

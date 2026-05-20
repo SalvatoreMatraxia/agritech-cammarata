@@ -75,7 +75,7 @@ function buildWeatherChart(canvas) {
 }
 
 function initAll() {
-    document.querySelectorAll('canvas[data-labels]').forEach(canvas => {
+    document.querySelectorAll('canvas[data-chart="weather"]').forEach(canvas => {
         if (canvas._agritechChart) return;
         canvas._agritechChart = buildWeatherChart(canvas);
     });
