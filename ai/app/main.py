@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import health, predictions
+from app.routers import health, predictions, satellite
 
 app = FastAPI(
     title="AgriTech Cammarata DSS — AI Service",
@@ -30,3 +30,4 @@ app.add_middleware(
 
 app.include_router(health.router, tags=["health"])
 app.include_router(predictions.router, prefix="/predict", tags=["predictions"])
+app.include_router(satellite.router, prefix="/satellite", tags=["satellite"])

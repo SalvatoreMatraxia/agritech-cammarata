@@ -22,6 +22,8 @@
            href="{{ path('treatment_index') }}">Quaderno</a>
         <a class="nav-link {% if app.request.attributes.get('_route') starts with 'operation' %}active{% endif %}"
            href="{{ path('operation_index') }}">Operazioni</a>
+        <a class="nav-link {% if app.request.attributes.get('_route') starts with 'map' %}active{% endif %}"
+           href="{{ path('map_index') }}">🗺️ Mappa</a>
         <div class="nav-divider"></div>
         <span class="nav-user">{{ app.user.email }}</span>
         <a class="nav-link" href="{{ path('app_logout') }}">Esci</a>

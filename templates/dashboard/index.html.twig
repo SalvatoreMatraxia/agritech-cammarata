@@ -132,6 +132,51 @@
     </div>
     {% endif %}
 
+    {# ── STATO VEGETAZIONE NDVI ──────────────────────────── #}
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🛰️</span>
+            Stato Vegetazione — NDVI Satellite
+        </div>
+        {% if ndvi %}
+        {% set nv = ndvi.ndvi_current %}
+        {% set ndviClass = nv < 0.25 ? 'ndvi-val-red' : (nv < 0.35 ? 'ndvi-val-orange' : (nv < 0.45 ? 'ndvi-val-yellow' : (nv < 0.55 ? 'ndvi-val-light-green' : 'ndvi-val-dark-green'))) %}
+        <div class="card-body">
+            {% if ndvi.anomaly %}
+            <div class="ndvi-anomaly-badge">⚠️ {{ ndvi.anomaly_description }}</div>
+            {% endif %}
+            <div class="ndvi-big {{ ndviClass }}">{{ nv|number_format(3) }}</div>
+            <div class="ndvi-trend-row">
+                {% if ndvi.ndvi_trend == 'improving' %}
+                <span class="trend-up">↑ In miglioramento</span>
+                {% elseif ndvi.ndvi_trend == 'declining' %}
+                <span class="trend-down">↓ In calo</span>
+                {% else %}
+                <span class="trend-stable">→ Stabile</span>
+                {% endif %}
+                <span class="ndvi-source">{{ ndvi.source == 'agromonitoring' ? 'Satellite' : 'Stimato ET₀' }}</span>
+            </div>
+            {% if ndvi.ndvi_history|length > 0 %}
+            <canvas class="ndvi-sparkline ndvi-sparkline-dash"
+                data-history="{{ ndvi.ndvi_history|map(h => h.ndvi)|slice(-30)|json_encode }}"
+                data-labels="{{ ndvi.ndvi_history|map(h => h.date)|slice(-30)|json_encode }}"
+                height="50"></canvas>
+            {% endif %}
+            <div class="ndvi-range">
+                Min 90gg: <strong>{{ ndvi.ndvi_min_90d|number_format(3) }}</strong> ·
+                Max: <strong>{{ ndvi.ndvi_max_90d|number_format(3) }}</strong>
+            </div>
+        </div>
+        {% else %}
+        <div class="card-body">
+            <p class="prediction-empty">NDVI non disponibile — avvia il microservizio AI.</p>
+        </div>
+        {% endif %}
+        <div class="card-footer">
+            <a href="{{ path('map_index') }}" class="update-btn">Vedi Mappa Completa</a>
+        </div>
+    </div>
+
     {# ── PREVISIONE RESA ──────────────────────────────────── #}
     <div class="card">
         <div class="card-header">

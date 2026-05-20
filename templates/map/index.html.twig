@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mappa Oliveto — Agritech Cammarata{% endblock %}
+
+{% block main %}
+{# Override main to allow full-height map without max-width constraint #}
+{% for msg in app.flashes('warning') %}<div class="flash flash-warning" style="position:absolute;top:70px;left:0;right:0;z-index:999;text-align:center;">{{ msg }}</div>{% endfor %}
+{% block body %}
+<div class="map-layout">
+
+    {# ── SIDEBAR ────────────────────────────────────────── #}
+    <aside class="map-sidebar" id="map-sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-title">🛰️ Mappa Oliveto</span>
+            <button class="sidebar-toggle" id="sidebar-toggle" title="Chiudi sidebar">✕</button>
+        </div>
+
+        {% if farm is null %}
+        <p class="sidebar-empty">Nessuna azienda configurata.</p>
+        {% else %}
+
+        <div class="sidebar-farm">
+            <div class="sidebar-farm-name">{{ farm.name }}</div>
+            <div class="sidebar-farm-meta">{{ farm.municipality }} · {{ farm.surface|number_format(1) }} ha · {{ farm.altitude }} m</div>
+        </div>
+
+        <div class="sidebar-section-title">Parcelle — NDVI</div>
+
+        {% for parcel in parcels %}
+        {% set ndvi = parcel.ndvi %}
+        {% set ndviClass = ndvi is null ? 'ndvi-unknown' : (ndvi < 0.25 ? 'ndvi-red' : (ndvi < 0.35 ? 'ndvi-orange' : (ndvi < 0.45 ? 'ndvi-yellow' : (ndvi < 0.55 ? 'ndvi-light-green' : 'ndvi-dark-green')))) %}
+        <div class="sidebar-parcel" data-parcel-id="{{ parcel.id }}">
+            <div class="sidebar-parcel-header">
+                <span class="ndvi-dot {{ ndviClass }}"></span>
+                <span class="sidebar-parcel-name">{{ parcel.name }}</span>
+                {% if parcel.anomaly %}
+                <span class="anomaly-badge">⚠️</span>
+                {% endif %}
+            </div>
+            <div class="sidebar-parcel-meta">{{ parcel.variety }} · {{ parcel.treeCount }} piante</div>
+            {% if ndvi is not null %}
+            <div class="ndvi-sidebar-value">
+                NDVI: <strong>{{ ndvi|number_format(3) }}</strong>
+                {% if parcel.ndvi_trend == 'improving' %}
+                    <span class="trend-up">↑</span>
+                {% elseif parcel.ndvi_trend == 'declining' %}
+                    <span class="trend-down">↓</span>
+                {% else %}
+                    <span class="trend-stable">→</span>
+                {% endif %}
+            </div>
+            {% if parcel.history|length > 0 %}
+            <canvas class="ndvi-sparkline"
+                data-history="{{ parcel.history|map(h => h.ndvi)|json_encode }}"
+                data-labels="{{ parcel.history|map(h => h.date)|json_encode }}"
+                height="40"></canvas>
+            {% endif %}
+            {% else %}
+            <div class="ndvi-sidebar-value no-data">NDVI non disponibile</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="sidebar-section-title">Legenda NDVI</div>
+        <div class="ndvi-legend">
+            <div class="legend-item"><span class="ndvi-dot ndvi-dark-green"></span> &gt; 0.55 Ottima vigoria</div>
+            <div class="legend-item"><span class="ndvi-dot ndvi-light-green"></span> 0.45–0.55 Buona</div>
+            <div class="legend-item"><span class="ndvi-dot ndvi-yellow"></span> 0.35–0.45 Discreta</div>
+            <div class="legend-item"><span class="ndvi-dot ndvi-orange"></span> 0.25–0.35 Scarsa</div>
+            <div class="legend-item"><span class="ndvi-dot ndvi-red"></span> &lt; 0.25 Critica</div>
+        </div>
+
+        {% endif %}
+    </aside>
+
+    {# ── MAP CONTAINER ──────────────────────────────────── #}
+    <div class="map-wrap">
+        <button class="sidebar-open-btn" id="sidebar-open" title="Apri sidebar">☰ Parcelle</button>
+
+        <div id="ndvi-map"
+             data-lat="{{ farm ? farm.latitude : 37.63 }}"
+             data-lon="{{ farm ? farm.longitude : 13.63 }}"
+             data-farm-name="{{ farm ? farm.name : '' }}"
+             data-farm-surface="{{ farm ? farm.surface : 0 }}"
+             data-parcels="{{ parcels|json_encode }}">
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+{% endblock %}

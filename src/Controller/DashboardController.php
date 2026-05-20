@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\PredictionRepository;
 use App\Service\AIService;
+use App\Service\SatelliteService;
 use App\Service\WeatherService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +18,7 @@ class DashboardController extends AbstractController
     public function __construct(
         private WeatherService $weatherService,
         private AIService $aiService,
+        private SatelliteService $satelliteService,
         private PredictionRepository $predictionRepository,
     ) {}
 
@@ -34,6 +36,7 @@ class DashboardController extends AbstractController
         $farm     = $user->getFarms()->first() ?: null;
         $weather  = null;
         $forecast = [];
+        $ndvi     = null;
 
         if ($farm !== null) {
             try {
@@ -41,6 +44,12 @@ class DashboardController extends AbstractController
                 $forecast = $this->weatherService->getForecast($farm, 7);
             } catch (\Throwable) {
                 $this->addFlash('warning', 'Dati meteo temporaneamente non disponibili.');
+            }
+
+            try {
+                $ndvi = $this->satelliteService->getNDVI($farm);
+            } catch (\Throwable) {
+                // NDVI non disponibile — non blocca il dashboard
             }
         }
 
@@ -56,6 +65,7 @@ class DashboardController extends AbstractController
             'weather'         => $weather,
             'forecast'        => $forecast,
             'totalTrees'      => $totalTrees,
+            'ndvi'            => $ndvi,
             'yieldPrediction' => $farm ? $this->predictionRepository->findLatestByType($farm, 'yield') : null,
             'pestPrediction'  => $farm ? $this->predictionRepository->findLatestByType($farm, 'pest_risk') : null,
             'waterPrediction' => $farm ? $this->predictionRepository->findLatestByType($farm, 'water_stress') : null,
