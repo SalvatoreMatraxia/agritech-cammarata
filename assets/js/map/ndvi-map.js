@@ -7,11 +7,11 @@ Chart.register(...registerables);
 // ── NDVI colour mapping ──────────────────────────────────────────────────────
 function ndviColor(ndvi) {
     if (ndvi === null || ndvi === undefined) return '#aaaaaa';
-    if (ndvi >= 0.55) return '#1a7a1a';
-    if (ndvi >= 0.45) return '#6abf69';
-    if (ndvi >= 0.35) return '#f5c518';
-    if (ndvi >= 0.25) return '#e67c13';
-    return '#cc2222';
+    if (ndvi > 0.55)  return '#2D5016';
+    if (ndvi >= 0.45) return '#8DB96E';
+    if (ndvi >= 0.35) return '#C8972A';
+    if (ndvi >= 0.25) return '#FFA500';
+    return '#DC3545';
 }
 
 function ndviLabel(ndvi) {
@@ -125,32 +125,29 @@ function initNDVIMap() {
             fillOpacity: 0.85,
         }).addTo(map);
 
-        const ndviText = parcel.ndvi !== null ? parcel.ndvi.toFixed(3) : '—';
-        const popupId  = `sparkline-popup-${parcel.id}`;
+        const ndviText    = parcel.ndvi !== null ? parcel.ndvi.toFixed(3) : '—';
+        const trendText   = trendArrow(parcel.ndvi_trend);
+        const surfaceText = parcel.surface ? `${parseFloat(parcel.surface).toFixed(1)} ha` : '—';
+        const altText     = parcel.altitude ? `${parcel.altitude} m` : '';
+        const aspectText  = parcel.aspect   ? `${parcel.aspect}${altText ? ' · ' + altText : ''}` : altText;
 
         const popupHTML = `
-            <div style="min-width:200px;font-family:system-ui,sans-serif;font-size:13px">
-                <div style="font-weight:700;font-size:14px;color:#2D5016;margin-bottom:4px">${parcel.name}</div>
-                <div style="color:#666;font-size:11px;margin-bottom:6px">${parcel.variety} · ${parcel.treeCount} piante · ${parseFloat(parcel.surface).toFixed(1)} ha</div>
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-                    <span style="background:${color};color:#fff;border-radius:12px;padding:2px 10px;font-weight:700;font-size:13px">NDVI ${ndviText}</span>
-                    <span style="color:#555;font-size:12px">${trendArrow(parcel.ndvi_trend)}</span>
+            <div class="parcel-popup">
+                <h4>${parcel.name}</h4>
+                <p class="popup-variety">${parcel.variety} · ${parcel.treeCount} piante</p>
+                <div class="popup-ndvi">
+                    <span class="popup-label">NDVI:</span>
+                    <span class="popup-value" style="color:${color}">${ndviText}</span>
+                    <span class="popup-trend">${trendText}</span>
                 </div>
-                <div style="font-size:11px;color:#555;margin-bottom:2px">${ndviLabel(parcel.ndvi)}</div>
-                ${parcel.anomaly ? '<div style="background:#f8d7da;color:#721c24;border-radius:4px;padding:3px 7px;font-size:11px;margin-top:4px;display:flex;align-items:center;gap:4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Anomalia rilevata</div>' : ''}
-                ${parcel.history && parcel.history.length > 0 ? `<canvas id="${popupId}" width="190" height="55" style="margin-top:6px;display:block"></canvas>` : ''}
+                <div class="popup-details">
+                    <p>Superficie: ${surfaceText}</p>
+                    ${aspectText ? `<p>Esposizione: ${aspectText}</p>` : ''}
+                    ${parcel.anomaly ? '<p style="color:#DC3545;font-weight:600">⚠ Anomalia rilevata</p>' : ''}
+                </div>
             </div>`;
 
-        circle.bindPopup(popupHTML, { maxWidth: 240 });
-
-        circle.on('popupopen', () => {
-            const canvas = document.getElementById(popupId);
-            if (!canvas || canvas._sparkinit) return;
-            canvas._sparkinit = true;
-            const values = (parcel.history || []).map(h => h.ndvi);
-            const labels = (parcel.history || []).map(h => h.date);
-            buildSparkline(canvas, labels, values);
-        });
+        circle.bindPopup(popupHTML, { maxWidth: 280, minWidth: 200 });
     });
 
     // Sidebar parcel click → pan to marker

@@ -267,6 +267,58 @@
     font-weight: 600;
 }
 
+/* ── LEAFLET POPUP ───────────────────────────────────────── */
+.leaflet-popup-content {
+    min-width: 200px;
+    max-width: 280px;
+    padding: 8px;
+}
+
+.parcel-popup h4 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    color: var(--color-primary);
+}
+
+.parcel-popup .popup-variety {
+    font-size: 12px;
+    color: var(--color-text-secondary, #666);
+    margin: 0 0 8px 0;
+}
+
+.parcel-popup .popup-ndvi {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.parcel-popup .popup-label {
+    color: #555;
+}
+
+.parcel-popup .popup-value {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.parcel-popup .popup-trend {
+    font-size: 12px;
+    color: #555;
+}
+
+.parcel-popup .popup-details {
+    font-size: 12px;
+    color: #666;
+    border-top: 1px solid #eee;
+    padding-top: 6px;
+}
+
+.parcel-popup .popup-details p {
+    margin: 2px 0;
+}
+
 /* ── MOBILE (≤ 768px) ────────────────────────────────────── */
 @media (max-width: 768px) {
     /* Mappa occupa TUTTO lo schermo */
