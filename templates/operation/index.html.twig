@@ -10,7 +10,7 @@
 
 {% if farm is null %}
 <div class="empty-state">
-    <span class="emoji">🌿</span>
+    <span class="empty-icon">{{ icon('leaf', 'icon') }}</span>
     Nessuna azienda configurata.
 </div>
 {% else %}
@@ -24,7 +24,7 @@
             <select name="type" onchange="this.form.submit()" class="form-control-sm">
                 <option value="">Tutte le operazioni</option>
                 {% for key, t in types %}
-                <option value="{{ key }}" {% if activeType == key %}selected{% endif %}>{{ t.icon }} {{ t.label }}</option>
+                <option value="{{ key }}" {% if activeType == key %}selected{% endif %}>{{ t.label }}</option>
                 {% endfor %}
             </select>
         </form>
@@ -33,7 +33,7 @@
 
 {% if operations|length == 0 %}
 <div class="empty-state">
-    <span class="emoji">🌿</span>
+    <span class="empty-icon">{{ icon('leaf', 'icon') }}</span>
     Nessuna operazione registrata.
     <a href="{{ path('operation_new') }}">Registra la prima operazione</a>
 </div>
@@ -41,7 +41,7 @@
 
 <div class="card">
     <div class="card-body p-0">
-        <table class="data-table">
+        <table class="data-table responsive-table">
             <thead>
                 <tr>
                     <th>Data</th>
@@ -55,17 +55,17 @@
             </thead>
             <tbody>
                 {% for op in operations %}
-                {% set typeInfo = types[op.type] ?? {label: op.type, icon: '🌿'} %}
+                {% set typeInfo = types[op.type] ?? {label: op.type, icon: 'leaf'} %}
                 <tr>
-                    <td class="td-date">{{ op.date|date('d/m/Y') }}</td>
-                    <td>
-                        <span class="op-type-badge">{{ typeInfo.icon }} {{ typeInfo.label }}</span>
+                    <td data-label="Data" class="td-date">{{ op.date|date('d/m/Y') }}</td>
+                    <td data-label="Tipo">
+                        <span class="op-type-badge">{{ icon(typeInfo.icon, 'icon') }} {{ typeInfo.label }}</span>
                     </td>
-                    <td>{{ op.parcel.name }}</td>
-                    <td class="td-desc">{{ op.description ?? '—' }}</td>
-                    <td class="td-center">{{ op.durationHours ? op.durationHours|number_format(1) : '—' }}</td>
-                    <td class="td-muted">{{ op.operator ?? '—' }}</td>
-                    <td class="td-center">{{ op.costEur ? op.costEur|number_format(2) : '—' }}</td>
+                    <td data-label="Parcella">{{ op.parcel.name }}</td>
+                    <td data-label="Descrizione" class="td-desc">{{ op.description ?? '—' }}</td>
+                    <td data-label="Durata (h)" class="td-center">{{ op.durationHours ? op.durationHours|number_format(1) : '—' }}</td>
+                    <td data-label="Operatore" class="td-muted">{{ op.operator ?? '—' }}</td>
+                    <td data-label="Costo (€)" class="td-center">{{ op.costEur ? op.costEur|number_format(2) : '—' }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -10,7 +10,7 @@
 
 {% if farm is null %}
     <div class="empty-state">
-        <span class="emoji">🌿</span>
+        <span class="empty-icon">{{ icon('leaf', 'icon') }}</span>
         Nessuna azienda configurata. Contatta l'amministratore.
     </div>
 {% else %}
@@ -20,29 +20,29 @@
     {# ── METEO OGGI ─────────────────────────────────────── #}
     <div class="card">
         <div class="card-header">
-            <span class="icon">🌤️</span>
+            {{ icon('cloud-sun', 'icon') }}
             Meteo Oggi — {{ farm.municipality }} ({{ farm.altitude }} m)
         </div>
         <div class="card-body">
             {% if weather %}
             <div class="stat-grid">
                 <div class="stat-box">
-                    <div class="stat-icon">🌡️</div>
+                    <div class="stat-icon">{{ icon('thermometer', 'icon icon-xl') }}</div>
                     <div class="stat-value">{{ weather.temp is not null ? weather.temp|number_format(1) ~ '°' : '—' }}</div>
                     <div class="stat-label">Temperatura</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-icon">💧</div>
+                    <div class="stat-icon">{{ icon('droplets', 'icon icon-xl') }}</div>
                     <div class="stat-value">{{ weather.humidity is not null ? weather.humidity ~ '%' : '—' }}</div>
                     <div class="stat-label">Umidità</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-icon">🌧️</div>
+                    <div class="stat-icon">{{ icon('cloud-rain', 'icon icon-xl') }}</div>
                     <div class="stat-value">{{ weather.rain is not null ? weather.rain|number_format(1) ~ ' mm' : '—' }}</div>
                     <div class="stat-label">Pioggia</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-icon">💨</div>
+                    <div class="stat-icon">{{ icon('wind', 'icon icon-xl') }}</div>
                     <div class="stat-value">{{ weather.wind is not null ? weather.wind|number_format(0) ~ ' km/h' : '—' }}</div>
                     <div class="stat-label">Vento</div>
                 </div>
@@ -59,7 +59,7 @@
     {# ── LA TUA AZIENDA ──────────────────────────────────── #}
     <div class="card">
         <div class="card-header">
-            <span class="icon">🌿</span>
+            {{ icon('leaf', 'icon') }}
             La Tua Azienda
         </div>
         <div class="card-body">
@@ -100,7 +100,7 @@
     {% if forecast|length > 0 %}
     <div class="card span-2">
         <div class="card-header">
-            <span class="icon">📅</span>
+            {{ icon('calendar', 'icon') }}
             Previsioni 7 Giorni
         </div>
         <div class="card-body">
@@ -136,7 +136,7 @@
     {# ── STATO VEGETAZIONE NDVI ──────────────────────────── #}
     <div class="card">
         <div class="card-header">
-            <span class="icon">🛰️</span>
+            {{ icon('satellite', 'icon') }}
             Stato Vegetazione — NDVI Satellite
         </div>
         {% if ndvi %}
@@ -144,7 +144,7 @@
         {% set ndviClass = nv < 0.25 ? 'ndvi-val-red' : (nv < 0.35 ? 'ndvi-val-orange' : (nv < 0.45 ? 'ndvi-val-yellow' : (nv < 0.55 ? 'ndvi-val-light-green' : 'ndvi-val-dark-green'))) %}
         <div class="card-body">
             {% if ndvi.anomaly %}
-            <div class="ndvi-anomaly-badge">⚠️ {{ ndvi.anomaly_description }}</div>
+            <div class="ndvi-anomaly-badge">{{ icon('alert-triangle', 'icon') }} {{ ndvi.anomaly_description }}</div>
             {% endif %}
             <div class="ndvi-big {{ ndviClass }}">{{ nv|number_format(3) }}</div>
             <div class="ndvi-trend-row">
@@ -183,7 +183,7 @@
     {# ── PREVISIONE RESA ──────────────────────────────────── #}
     <div class="card">
         <div class="card-header">
-            <span class="icon">🫒</span>
+            {{ icon('leaf', 'icon') }}
             Previsione Resa {{ 'now'|date('Y') }}
         </div>
         {% if yieldPrediction %}
@@ -191,12 +191,12 @@
         <div class="card-body">
             <div class="stat-grid">
                 <div class="stat-box">
-                    <div class="stat-icon">⚖️</div>
+                    <div class="stat-icon">{{ icon('scale', 'icon icon-xl') }}</div>
                     <div class="stat-value">{{ yr.yield_kg_ha|number_format(0) }}</div>
                     <div class="stat-label">kg/ha</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-icon">🫙</div>
+                    <div class="stat-icon">{{ icon('beaker', 'icon icon-xl') }}</div>
                     <div class="stat-value">{{ yr.oil_liters|number_format(0) }}</div>
                     <div class="stat-label">Litri olio</div>
                 </div>
@@ -244,7 +244,7 @@
     {# ── RISCHIO MOSCA OLEARIA ────────────────────────────── #}
     <div class="card">
         <div class="card-header">
-            <span class="icon">🪰</span>
+            {{ icon('bug', 'icon') }}
             Rischio Mosca Olearia
         </div>
         {% if pestPrediction %}
@@ -255,7 +255,7 @@
                 <span class="risk-score-value">{{ (pr.risk_score * 100)|number_format(0) }}%</span>
                 Rischio {{ pr.risk_level|capitalize }}
             </div>
-            <div class="info-list" style="margin-top: 0.75rem;">
+            <div class="info-list mt-md">
                 <div class="info-row">
                     <span class="label">Generazione</span>
                     <span class="value">Gen. {{ pr.generazione_n ?? '—' }}</span>
@@ -304,7 +304,7 @@
     {# ── STRESS IDRICO ────────────────────────────────────── #}
     <div class="card">
         <div class="card-header">
-            <span class="icon">💧</span>
+            {{ icon('droplets', 'icon') }}
             Stress Idrico — Bilancio FAO-56
         </div>
         {% if waterPrediction %}
@@ -338,7 +338,7 @@
                 {% endif %}
             </div>
             {% if wr.economic_impact is defined and wr.economic_impact.costo_acqua_eur > 0 %}
-            <div class="info-list" style="margin-top: 0.6rem;">
+            <div class="info-list mt-sm">
                 <div class="info-row">
                     <span class="label">Costo irrigazione</span>
                     <span class="value">{{ wr.economic_impact.costo_acqua_eur|number_format(0) }} €</span>
@@ -366,7 +366,7 @@
     {% if farm.parcels|length > 0 %}
     <div class="card span-2">
         <div class="card-header">
-            <span class="icon">🗺️</span>
+            {{ icon('map', 'icon') }}
             Parcelle
         </div>
         <div class="card-body">
@@ -375,10 +375,10 @@
                 <div class="parcel-card">
                     <div class="parcel-name">{{ parcel.name }}</div>
                     <div class="parcel-details">
-                        <span>🫒 {{ parcel.variety }}</span>
-                        <span>📐 {{ parcel.surface|number_format(1) }} ha · {{ parcel.treeCount }} piante</span>
-                        <span>🧭 Esp. {{ parcel.aspect ?? '—' }} · {{ parcel.altitude ?? '—' }} m</span>
-                        <span>🌿 {% if parcel.isBiological %}Biologico{% else %}Convenzionale{% endif %}</span>
+                        <span>{{ icon('leaf', 'icon') }} {{ parcel.variety }}</span>
+                        <span>{{ icon('ruler', 'icon') }} {{ parcel.surface|number_format(1) }} ha · {{ parcel.treeCount }} piante</span>
+                        <span>{{ icon('compass', 'icon') }} Esp. {{ parcel.aspect ?? '—' }} · {{ parcel.altitude ?? '—' }} m</span>
+                        <span>{{ icon('leaf', 'icon') }} {% if parcel.isBiological %}Biologico{% else %}Convenzionale{% endif %}</span>
                     </div>
                 </div>
                 {% endfor %}

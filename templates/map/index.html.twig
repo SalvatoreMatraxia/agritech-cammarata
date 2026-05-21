@@ -4,15 +4,26 @@
 
 {% block main %}
 {# Override main to allow full-height map without max-width constraint #}
-{% for msg in app.flashes('warning') %}<div class="flash flash-warning" style="position:absolute;top:70px;left:0;right:0;z-index:999;text-align:center;">{{ msg }}</div>{% endfor %}
+{% for msg in app.flashes('warning') %}<div class="flash flash-warning map-flash">{{ msg }}</div>{% endfor %}
 {% block body %}
 <div class="map-layout">
 
-    {# ── SIDEBAR ────────────────────────────────────────── #}
+    {# ── MAP CONTAINER — prima nel DOM = sinistra su desktop ── #}
+    <div class="map-wrap">
+        <div id="ndvi-map"
+             data-lat="{{ farm ? farm.latitude : 37.63 }}"
+             data-lon="{{ farm ? farm.longitude : 13.63 }}"
+             data-farm-name="{{ farm ? farm.name : '' }}"
+             data-farm-surface="{{ farm ? farm.surface : 0 }}"
+             data-parcels="{{ parcels|json_encode }}">
+        </div>
+    </div>
+
+    {# ── SIDEBAR — seconda nel DOM = destra su desktop ────────── #}
     <aside class="map-sidebar" id="map-sidebar">
         <div class="sidebar-header">
-            <span class="sidebar-title">🛰️ Mappa Oliveto</span>
-            <button class="sidebar-toggle" id="sidebar-toggle" title="Chiudi sidebar">✕</button>
+            <span class="sidebar-title">{{ icon('satellite', 'icon') }} Mappa Oliveto</span>
+            <button class="sidebar-toggle" id="sidebar-toggle" title="Chiudi">{{ icon('x', 'icon') }}</button>
         </div>
 
         {% if farm is null %}
@@ -34,7 +45,7 @@
                 <span class="ndvi-dot {{ ndviClass }}"></span>
                 <span class="sidebar-parcel-name">{{ parcel.name }}</span>
                 {% if parcel.anomaly %}
-                <span class="anomaly-badge">⚠️</span>
+                <span class="anomaly-badge">{{ icon('alert-triangle', 'icon') }}</span>
                 {% endif %}
             </div>
             <div class="sidebar-parcel-meta">{{ parcel.variety }} · {{ parcel.treeCount }} piante</div>
@@ -75,19 +86,12 @@
         {% endif %}
     </aside>
 
-    {# ── MAP CONTAINER ──────────────────────────────────── #}
-    <div class="map-wrap">
-        <button class="sidebar-open-btn" id="sidebar-open" title="Apri sidebar">☰ Parcelle</button>
-
-        <div id="ndvi-map"
-             data-lat="{{ farm ? farm.latitude : 37.63 }}"
-             data-lon="{{ farm ? farm.longitude : 13.63 }}"
-             data-farm-name="{{ farm ? farm.name : '' }}"
-             data-farm-surface="{{ farm ? farm.surface : 0 }}"
-             data-parcels="{{ parcels|json_encode }}">
-        </div>
-    </div>
-
 </div>
+
+{# FAB — visibile solo su mobile per aprire il bottom sheet #}
+<button class="sidebar-fab" id="sidebar-fab" aria-label="Mostra parcelle" aria-expanded="false">
+    {{ icon('clipboard', 'icon icon-fab') }}
+</button>
+
 {% endblock %}
 {% endblock %}

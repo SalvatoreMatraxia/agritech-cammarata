@@ -22,7 +22,7 @@
         <select name="type" id="type" class="form-control" required>
             <option value="">— Seleziona —</option>
             {% for key, t in types %}
-            <option value="{{ key }}">{{ t.icon }} {{ t.label }}</option>
+            <option value="{{ key }}">{{ t.label }}</option>
             {% endfor %}
         </select>
     </div>

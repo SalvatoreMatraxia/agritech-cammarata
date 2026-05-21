@@ -52,8 +52,8 @@
 }
 
 /* ── FORECAST VALUE COLORS ───────────────────────────────── */
-.val-hot   { color: #c0392b; }
-.val-cold  { color: #2980b9; }
+.val-hot   { color: var(--color-temp-hot); }
+.val-cold  { color: var(--color-temp-cold); }
 .val-green { color: var(--color-secondary); }
 
 /* ── PARCELS GRID ────────────────────────────────────────── */
@@ -82,4 +82,19 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+}
+
+/* ── MOBILE ──────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    /* Forecast table: hide less important columns */
+    .forecast-row {
+        grid-template-columns: 70px 1fr 1fr 1fr;
+        font-size: 0.8rem;
+        padding: 0.4rem 0.5rem;
+    }
+
+    /* Hide ET0 column on small screens */
+    .forecast-row > *:nth-child(5) { display: none; }
+
+    .parcels-grid { grid-template-columns: 1fr; }
 }

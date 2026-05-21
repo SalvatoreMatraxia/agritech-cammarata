@@ -1,3 +1,4 @@
+@import './components/icons.css';
 @import './components/cards.css';
 @import './components/forms.css';
 @import './components/charts.css';
@@ -27,6 +28,30 @@
     --color-border:     #C8E0A8;
     --color-bg-card:    #FFFFFF;
     --nav-h:            60px;
+
+    /* ── STATUS PALETTE (badge, alert, flash) ──────────────── */
+    --color-success:        #28a745;
+    --color-success-bg:     #d4edda;
+    --color-success-text:   #155724;
+    --color-success-border: #c3e6cb;
+    --color-warn-bg:        #fff3cd;
+    --color-warn-text:      #856404;
+    --color-warn-border:    #ffeeba;
+    --color-error-bg:       #f8d7da;
+    --color-error-text:     #721c24;
+    --color-error-border:   #f5c6cb;
+
+    /* ── NDVI PALETTE ───────────────────────────────────────── */
+    --ndvi-dark-green:  #1a7a1a;
+    --ndvi-light-green: #6abf69;
+    --ndvi-yellow:      #f5c518;
+    --ndvi-orange:      #e67c13;
+    --ndvi-red:         #cc2222;
+    --ndvi-unknown:     #aaaaaa;
+
+    /* ── TEMPERATURA (forecast) ─────────────────────────────── */
+    --color-temp-hot:  #c0392b;
+    --color-temp-cold: #2980b9;
 }
 
 /* ── BASE ────────────────────────────────────────────────── */
@@ -46,7 +71,7 @@ body {
     padding: 0 1.25rem;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1001;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
@@ -61,7 +86,7 @@ body {
     letter-spacing: 0.02em;
 }
 
-.navbar-brand .olive { font-size: 1.4rem; }
+.navbar-brand .olive { display: flex; align-items: center; }
 
 .navbar-nav {
     margin-left: auto;
@@ -95,6 +120,68 @@ body {
     margin: 0 0.25rem;
 }
 
+/* ── HAMBURGER (hidden on desktop) ───────────────────────── */
+.navbar-hamburger {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--color-white);
+    font-size: 1.4rem;
+    cursor: pointer;
+    min-height: 44px;
+    min-width: 44px;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    border-radius: 6px;
+    transition: background 0.15s;
+}
+
+.navbar-hamburger:hover { background: rgba(255, 255, 255, 0.15); }
+
+/* ── NAVBAR MOBILE ───────────────────────────────────────── */
+@media (max-width: 768px) {
+    .navbar { position: relative; flex-wrap: wrap; }
+
+    .navbar-hamburger { display: flex; }
+
+    .navbar-nav {
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        position: absolute;
+        top: var(--nav-h);
+        left: 0;
+        right: 0;
+        background: var(--color-primary);
+        z-index: 9999;
+        padding: 0.25rem 0 0.75rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        gap: 0;
+        margin-left: 0;
+    }
+
+    .navbar-nav.open { display: flex; }
+
+    .nav-link {
+        padding: 0.85rem 1.25rem;
+        border-radius: 0;
+        font-size: 0.95rem;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-divider { display: none; }
+
+    .nav-user {
+        padding: 0.75rem 1.25rem 0.25rem;
+        font-size: 0.78rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 0.25rem;
+    }
+}
+
 /* ── LAYOUT ──────────────────────────────────────────────── */
 .main-content {
     max-width: 1100px;
@@ -110,9 +197,24 @@ body {
     font-size: 0.9rem;
 }
 
-.flash-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-.flash-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-.flash-error   { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+.flash-success { background: var(--color-success-bg); color: var(--color-success-text); border: 1px solid var(--color-success-border); }
+.flash-warning { background: var(--color-warn-bg);    color: var(--color-warn-text);    border: 1px solid var(--color-warn-border);    }
+.flash-error   { background: var(--color-error-bg);   color: var(--color-error-text);   border: 1px solid var(--color-error-border);   }
+
+/* ── SPACING UTILITIES ───────────────────────────────────── */
+.mt-sm { margin-top: 0.5rem; }
+.mt-md { margin-top: 0.75rem; }
+.mt-lg { margin-top: 1rem; }
+
+/* ── MAP FLASH (posizionato sopra la mappa) ──────────────── */
+.map-flash {
+    position: fixed;
+    top: var(--nav-h);
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    text-align: center;
+}
 
 /* ── PAGE TITLE ──────────────────────────────────────────── */
 .page-title {
@@ -136,8 +238,46 @@ body {
     color: var(--color-text-muted);
 }
 
-.empty-state .emoji {
-    font-size: 3rem;
+.empty-state .empty-icon {
     display: block;
     margin-bottom: 0.75rem;
+}
+
+/* ── TOUCH TARGETS (min 44px Apple standard) ─────────────── */
+.btn-primary,
+.btn-secondary,
+.btn-login,
+.update-btn,
+.page-link {
+    min-height: 44px;
+}
+
+.nav-link,
+.btn-primary,
+.btn-secondary,
+.btn-login,
+.update-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── MOBILE GLOBAL ───────────────────────────────────────── */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 1rem 0.75rem 2rem;
+    }
+
+    .page-title {
+        font-size: 1.15rem;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body { font-size: 14px; }
+
+    .page-title { font-size: 1rem; }
+
+    .main-content { padding: 0.75rem 0.6rem 1.5rem; }
 }

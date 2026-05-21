@@ -10,7 +10,7 @@
 
 <div class="detail-grid">
     <div class="card">
-        <div class="card-header"><span class="icon">🧴</span> Prodotto</div>
+        <div class="card-header">{{ icon('spray-can', 'icon') }} Prodotto</div>
         <div class="card-body">
             <div class="info-list">
                 <div class="info-row"><span class="label">Nome commerciale</span><span class="value">{{ treatment.productName }}</span></div>
@@ -30,7 +30,7 @@
     </div>
 
     <div class="card">
-        <div class="card-header"><span class="icon">📐</span> Applicazione</div>
+        <div class="card-header">{{ icon('ruler', 'icon') }} Applicazione</div>
         <div class="card-body">
             <div class="info-list">
                 <div class="info-row"><span class="label">Data</span><span class="value">{{ treatment.date|date('d/m/Y') }}</span></div>
@@ -48,17 +48,17 @@
 
     {% if efficacy is not null %}
     <div class="card">
-        <div class="card-header"><span class="icon">📊</span> Efficacia Attuale</div>
+        <div class="card-header">{{ icon('bar-chart-2', 'icon') }} Efficacia Attuale</div>
         <div class="card-body">
             {% set eff = efficacy %}
             <div class="efficacy-large {{ eff >= 60 ? 'eff-high' : (eff >= 30 ? 'eff-medium' : 'eff-low') }}">
                 {{ eff|number_format(1) }}%
             </div>
-            <div class="stress-bar" style="margin-top: 0.75rem;">
+            <div class="stress-bar mt-md">
                 <div class="stress-bar-fill {{ eff >= 60 ? 'stress-fill-none' : (eff >= 30 ? 'stress-fill-medium' : 'stress-fill-severe') }}" style="width: {{ eff }}%"></div>
             </div>
             {% if eff < 30 %}
-            <div class="irrigation-alert irrigation-needed" style="margin-top: 0.75rem;">
+            <div class="irrigation-alert irrigation-needed mt-md">
                 Efficacia sotto soglia — valutare ritrattamento
             </div>
             {% endif %}
@@ -68,7 +68,7 @@
 
     {% if treatment.notes %}
     <div class="card">
-        <div class="card-header"><span class="icon">📝</span> Note</div>
+        <div class="card-header">{{ icon('file-text', 'icon') }} Note</div>
         <div class="card-body">{{ treatment.notes }}</div>
     </div>
     {% endif %}

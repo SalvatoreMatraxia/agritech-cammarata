@@ -2,9 +2,9 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
     <title>{% block title %}Agritech Cammarata{% endblock %}</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫒</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232D5016'><path d='M17 8C8 10 5.9 16.17 3.82 21c1.5.04 3.06-.84 4.18-2 2.16 2.47 5.09 2.95 7 0 3-4.5 2.5-11 2-13z'/></svg>">
     {% block stylesheets %}{% endblock %}
     {% block importmap %}{{ importmap('app') }}{% endblock %}
 </head>
@@ -13,9 +13,12 @@
 {% if app.user %}
 <nav class="navbar">
     <a class="navbar-brand" href="{{ path('dashboard_index') }}">
-        <span class="olive">🫒</span> Agritech Cammarata
+        <span class="olive">{{ icon('leaf', 'icon icon-brand') }}</span> Agritech Cammarata
     </a>
-    <div class="navbar-nav">
+    <button class="navbar-hamburger" id="navbar-hamburger" aria-label="Apri menu" aria-expanded="false">
+        {{ icon('menu', 'icon icon-nav') }}
+    </button>
+    <div class="navbar-nav" id="navbar-menu">
         <a class="nav-link {% if app.request.attributes.get('_route') starts with 'dashboard' %}active{% endif %}"
            href="{{ path('dashboard_index') }}">Dashboard</a>
         <a class="nav-link {% if app.request.attributes.get('_route') starts with 'treatment' %}active{% endif %}"
@@ -23,7 +26,7 @@
         <a class="nav-link {% if app.request.attributes.get('_route') starts with 'operation' %}active{% endif %}"
            href="{{ path('operation_index') }}">Operazioni</a>
         <a class="nav-link {% if app.request.attributes.get('_route') starts with 'map' %}active{% endif %}"
-           href="{{ path('map_index') }}">🗺️ Mappa</a>
+           href="{{ path('map_index') }}">{{ icon('map', 'icon') }} Mappa</a>
         <div class="nav-divider"></div>
         <span class="nav-user">{{ app.user.email }}</span>
         <a class="nav-link" href="{{ path('app_logout') }}">Esci</a>

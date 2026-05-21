@@ -1,0 +1,49 @@
+/* ── SVG ICON SYSTEM (Lucide) ─────────────────────────────── */
+.icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    flex-shrink: 0;
+}
+
+/* ── SIZE VARIANTS ───────────────────────────────────────── */
+.icon-sm   { width: 0.875rem; height: 0.875rem; }
+.icon-lg   { width: 1.25rem;  height: 1.25rem; }
+.icon-xl   { width: 1.6rem;   height: 1.6rem; }
+.icon-nav  { width: 1.125rem; height: 1.125rem; }
+.icon-brand { width: 1.4rem;  height: 1.4rem; }
+.icon-fab  { width: 1.5rem;   height: 1.5rem; }
+
+/* ── CONTEXT OVERRIDES ───────────────────────────────────── */
+.card-header .icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex-shrink: 0;
+}
+
+.stat-icon .icon {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+.empty-state .icon {
+    width: 3rem;
+    height: 3rem;
+    display: block;
+    margin: 0 auto 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.op-type-badge .icon {
+    width: 1rem;
+    height: 1rem;
+    vertical-align: -0.1em;
+}
+
+.ndvi-anomaly-badge .icon {
+    width: 0.9rem;
+    height: 0.9rem;
+    vertical-align: -0.1em;
+    flex-shrink: 0;
+}

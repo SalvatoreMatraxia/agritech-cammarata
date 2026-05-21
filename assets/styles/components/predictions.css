@@ -40,7 +40,7 @@
 
 /* ── EXPLANATION BOX ─────────────────────────────────────── */
 .explanation-box {
-    background: #f0f7e6;
+    background: var(--color-bg);
     border: 1px solid var(--color-border);
     border-left: 4px solid var(--color-secondary);
     border-radius: var(--border-radius);
@@ -62,10 +62,10 @@
     font-size: 0.95rem;
 }
 
-.risk-low    { background: #d4edda; color: #155724; }
-.risk-medium { background: #fff3cd; color: #856404; }
-.risk-high   { background: #ffe5cc; color: #7a3800; }
-.risk-very-high { background: #f8d7da; color: #721c24; }
+.risk-low       { background: var(--color-success-bg); color: var(--color-success-text); }
+.risk-medium    { background: var(--color-warn-bg);    color: var(--color-warn-text);    }
+.risk-high      { background: #ffe5cc; color: #7a3800; }
+.risk-very-high { background: var(--color-error-bg);   color: var(--color-error-text);   }
 
 .risk-score-value {
     font-size: 1.4rem;
@@ -98,7 +98,7 @@
     transition: width 0.4s ease;
 }
 
-.stress-fill-none   { background: #28a745; }
+.stress-fill-none   { background: var(--color-success); }
 .stress-fill-low    { background: #90d83b; }
 .stress-fill-medium { background: var(--color-warning); }
 .stress-fill-high   { background: #fd7e14; }
@@ -108,7 +108,7 @@
 .reserve-bar-fill {
     height: 100%;
     border-radius: 5px;
-    background: linear-gradient(90deg, var(--color-danger) 0%, var(--color-warning) 40%, #28a745 100%);
+    background: linear-gradient(90deg, var(--color-danger) 0%, var(--color-warning) 40%, var(--color-success) 100%);
     transition: width 0.4s ease;
 }
 
@@ -177,5 +177,18 @@
     margin-top: 0.6rem;
 }
 
-.irrigation-needed    { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-.irrigation-ok        { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.irrigation-needed { background: var(--color-warn-bg);    color: var(--color-warn-text);    border: 1px solid var(--color-warn-border);    }
+.irrigation-ok     { background: var(--color-success-bg); color: var(--color-success-text); border: 1px solid var(--color-success-border); }
+
+/* ── MOBILE ──────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .scenarios-grid { grid-template-columns: repeat(3, 1fr); gap: 0.35rem; }
+    .scenario-value { font-size: 0.9rem; }
+
+    .card-footer { flex-wrap: wrap; gap: 0.5rem; }
+
+    .update-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

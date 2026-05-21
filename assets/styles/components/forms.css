@@ -28,10 +28,15 @@
 }
 
 .login-header .logo {
-    font-size: 3rem;
-    line-height: 1;
-    display: block;
+    display: flex;
+    justify-content: center;
     margin-bottom: 0.5rem;
+}
+
+.icon-login {
+    width: 3rem;
+    height: 3rem;
+    color: var(--color-white);
 }
 
 .login-header h1 { font-size: 1.25rem; font-weight: 700; }

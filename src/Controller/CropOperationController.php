@@ -17,12 +17,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class CropOperationController extends AbstractController
 {
     public const TYPES = [
-        'potatura'           => ['label' => 'Potatura',            'icon' => '✂️'],
-        'irrigazione'        => ['label' => 'Irrigazione',         'icon' => '💧'],
-        'raccolta'           => ['label' => 'Raccolta',            'icon' => '🧺'],
-        'concimazione'       => ['label' => 'Concimazione',        'icon' => '🌱'],
-        'monitoraggio'       => ['label' => 'Monitoraggio',        'icon' => '🔍'],
-        'lavorazione_terreno'=> ['label' => 'Lavorazione terreno', 'icon' => '🚜'],
+        'potatura'           => ['label' => 'Potatura',            'icon' => 'scissors'],
+        'irrigazione'        => ['label' => 'Irrigazione',         'icon' => 'droplets'],
+        'raccolta'           => ['label' => 'Raccolta',            'icon' => 'shopping-basket'],
+        'concimazione'       => ['label' => 'Concimazione',        'icon' => 'sprout'],
+        'monitoraggio'       => ['label' => 'Monitoraggio',        'icon' => 'search'],
+        'lavorazione_terreno'=> ['label' => 'Lavorazione terreno', 'icon' => 'wrench'],
     ];
 
     public function __construct(
