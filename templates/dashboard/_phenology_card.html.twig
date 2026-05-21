@@ -1,0 +1,121 @@
+{% if phenology is defined and phenology is not empty %}
+
+{# Determine if all parcels share the same variety #}
+{% set firstVariety = phenology|first.variety %}
+{% set multiVariety = false %}
+{% for data in phenology %}
+    {% if data.variety != firstVariety %}{% set multiVariety = true %}{% endif %}
+{% endfor %}
+
+<div class="card span-2 phenology-card">
+    <div class="card-header">
+        {{ icon('sprout', 'icon') }}
+        Fenologia Oliveto
+        <span class="card-header-meta">Ciclo biologico {{ 'now'|date('Y') }}</span>
+    </div>
+    <div class="card-body">
+
+        {% for parcelId, data in phenology %}
+        <div class="pheno-block">
+
+            {# Parcel / variety header — only when varieties differ or multiple parcels #}
+            {% if multiVariety or phenology|length > 1 %}
+            <div class="pheno-variety-label">
+                {{ data.parcel_name }} — {{ data.variety }}
+            </div>
+            {% endif %}
+
+            {# ── STAGE TIMELINE ──────────────────────────── #}
+            <div class="pheno-timeline js-pheno-timeline" role="list" aria-label="Stadi fenologici">
+                {% for stage in data.all_stages %}
+                <div class="pheno-stage {% if stage.status == 'current' %}is-current{% endif %}" role="listitem">
+                    <div class="pheno-dot {{ stage.status }}"
+                         title="{{ stage.label_it }}{% if stage.actual_date %} — {{ stage.actual_date|date('d/m') }}{% elseif stage.estimated_date %} (est. {{ stage.estimated_date|date('d/m') }}){% endif %}">
+                    </div>
+                    <div class="pheno-stage-label">{{ stage.label_it }}</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {# ── CURRENT STAGE SUMMARY ───────────────────── #}
+            {% set dd_total = data.degree_days_cumulated %}
+            {% set dd_max   = data.all_stages|last.dd_start %}
+            {% set pct_raw  = dd_max > 0 ? ((dd_total / dd_max) * 100)|round : 0 %}
+            {% set pct      = pct_raw > 100 ? 100 : pct_raw %}
+
+            {% if data.agronomic_implications.irrigation_critical %}
+            <div class="pheno-irrigation-alert">
+                {{ icon('droplets', 'icon icon-sm') }} Stress idrico critico in questa fase — monitorare l'irrigazione
+            </div>
+            {% endif %}
+
+            <div class="pheno-current-box">
+                <div class="pheno-stage-main">
+                    <div class="pheno-dd-label">GDD cumulati {{ dd_total|number_format(0) }}</div>
+                    <div class="pheno-stage-name">{{ data.stage_label_it }}</div>
+                </div>
+                <div class="pheno-dd-bar-wrap">
+                    <div class="pheno-progress-bar">
+                        <div class="pheno-progress-fill" style="width: {{ pct }}%"></div>
+                    </div>
+                    <div class="pheno-progress-label">{{ pct }}% del ciclo annuale</div>
+                </div>
+            </div>
+
+            {# ── NEXT STAGE ──────────────────────────────── #}
+            {% if data.next_stage %}
+            <div class="pheno-next">
+                {{ icon('chevron-right', 'icon icon-sm') }}
+                Prossimo stadio: <strong>{{ data.next_stage_label_it }}</strong>
+                {% if data.days_to_next_stage %}
+                tra <strong>~{{ data.days_to_next_stage }} giorni</strong>
+                {% endif %}
+                {% if data.estimated_next_stage_date %}
+                <span class="pheno-next-date">({{ data.estimated_next_stage_date|date('d/m/Y') }})</span>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {# ── AGRONOMIC CONTEXT ───────────────────────── #}
+            {% if data.phenology_context %}
+            <div class="pheno-context">{{ data.phenology_context }}</div>
+            {% endif %}
+
+            {# ── PEST RISK CONTEXT ───────────────────────── #}
+            {% if data.agronomic_implications.pest_risk_context %}
+            <div class="pheno-pest">
+                {{ icon('bug', 'icon icon-sm') }}
+                <span>{{ data.agronomic_implications.pest_risk_context }}</span>
+            </div>
+            {% endif %}
+
+            {# ── HARVEST WINDOW ──────────────────────────── #}
+            {% set hw = data.agronomic_implications.harvest_window %}
+            {% if hw.optimal %}
+            <div class="pheno-harvest">
+                {% if hw.earliest %}
+                <div class="pheno-harvest-date">
+                    <span class="phd-label">Prima raccolta</span>
+                    {{ hw.earliest|date('d/m/Y') }}
+                </div>
+                {% endif %}
+                <div class="pheno-harvest-date optimal">
+                    <span class="phd-label">Ottimale</span>
+                    {{ hw.optimal|date('d/m/Y') }}
+                </div>
+                {% if hw.latest %}
+                <div class="pheno-harvest-date">
+                    <span class="phd-label">Ultima</span>
+                    {{ hw.latest|date('d/m/Y') }}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+{% endif %}

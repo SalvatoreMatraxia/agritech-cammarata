@@ -1,0 +1,266 @@
+/* ── PHENOLOGY CARD ──────────────────────────────────────── */
+.phenology-card .card-header-meta {
+    margin-left: auto;
+    font-size: 0.78rem;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+.pheno-block + .pheno-block {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.pheno-variety-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.85rem;
+}
+
+/* ── HORIZONTAL STAGE TIMELINE ───────────────────────────── */
+.pheno-timeline {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.pheno-timeline::-webkit-scrollbar { display: none; }
+
+/* Connecting baseline */
+.pheno-timeline::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 11px;
+    right: 11px;
+    height: 2px;
+    background: var(--color-border);
+    z-index: 0;
+}
+
+.pheno-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 58px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── STAGE DOTS ──────────────────────────────────────────── */
+.pheno-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--color-border);
+    background: var(--color-bg-card);
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.pheno-dot.completed {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.pheno-dot.current {
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+    animation: pheno-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes pheno-pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(74, 124, 47, 0.35); }
+    50%       { box-shadow: 0 0 0 8px rgba(74, 124, 47, 0.08); }
+}
+
+/* ── STAGE LABELS ────────────────────────────────────────── */
+.pheno-stage-label {
+    font-size: 0.6rem;
+    text-align: center;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+    margin-top: 0.35rem;
+    max-width: 58px;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.pheno-stage.is-current .pheno-stage-label {
+    color: var(--color-secondary);
+    font-weight: 700;
+    font-size: 0.62rem;
+}
+
+/* ── CURRENT STAGE BOX ───────────────────────────────────── */
+.pheno-current-box {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-secondary);
+    border-radius: var(--border-radius);
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.pheno-stage-main {
+    flex: 1;
+}
+
+.pheno-stage-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 0.2rem;
+}
+
+.pheno-dd-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.pheno-dd-bar-wrap {
+    flex: 1;
+    min-width: 120px;
+}
+
+.pheno-progress-bar {
+    height: 6px;
+    background: var(--color-border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.2rem;
+}
+
+.pheno-progress-fill {
+    height: 100%;
+    background: var(--color-secondary);
+    border-radius: 3px;
+}
+
+.pheno-progress-label {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    text-align: right;
+}
+
+/* ── NEXT STAGE BANNER ───────────────────────────────────── */
+.pheno-next {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.84rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.pheno-next strong { color: var(--color-primary); }
+
+.pheno-next-date {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+/* ── AGRONOMIC CONTEXT ───────────────────────────────────── */
+.pheno-context {
+    background: var(--color-bg);
+    border-left: 3px solid var(--color-secondary);
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    padding: 0.7rem 1rem;
+    font-size: 0.84rem;
+    color: var(--color-text);
+    line-height: 1.55;
+    margin-bottom: 0.75rem;
+}
+
+.pheno-pest {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    background: var(--color-warn-bg);
+    border: 1px solid var(--color-warn-border);
+    color: var(--color-warn-text);
+    border-radius: var(--border-radius);
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.45;
+}
+
+.pheno-pest .icon { margin-top: 1px; flex-shrink: 0; }
+
+/* ── HARVEST WINDOW ──────────────────────────────────────── */
+.pheno-harvest {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.pheno-harvest-date {
+    font-size: 0.78rem;
+    padding: 0.3rem 0.65rem;
+    border-radius: 5px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+    color: var(--color-text-muted);
+}
+
+.pheno-harvest-date.optimal {
+    background: var(--color-success-bg);
+    border-color: var(--color-success-border);
+    color: var(--color-success-text);
+    font-weight: 600;
+}
+
+.pheno-harvest-date .phd-label {
+    display: block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.1rem;
+    opacity: 0.75;
+}
+
+/* ── IRRIGATION ALERT ────────────────────────────────────── */
+.pheno-irrigation-alert {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-warn-text);
+    background: var(--color-warn-bg);
+    border: 1px solid var(--color-warn-border);
+    border-radius: 5px;
+    padding: 0.3rem 0.7rem;
+    margin-bottom: 0.6rem;
+}
+
+/* ── MOBILE ──────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .pheno-stage   { min-width: 46px; }
+    .pheno-stage-label { font-size: 0.55rem; max-width: 46px; }
+
+    .pheno-current-box { flex-direction: column; gap: 0.5rem; }
+    .pheno-stage-name  { font-size: 0.95rem; }
+    .pheno-dd-bar-wrap { min-width: 100%; }
+
+    .pheno-next { font-size: 0.8rem; }
+    .pheno-harvest { flex-direction: column; }
+    .pheno-harvest-date { width: 100%; }
+}

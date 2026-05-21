@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\PredictionRepository;
 use App\Service\AIService;
+use App\Service\PhenologyService;
 use App\Service\SatelliteService;
 use App\Service\WeatherService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,6 +21,7 @@ class DashboardController extends AbstractController
         private AIService $aiService,
         private SatelliteService $satelliteService,
         private PredictionRepository $predictionRepository,
+        private PhenologyService $phenologyService,
     ) {}
 
     #[Route('/', name: 'app_home')]
@@ -60,6 +62,15 @@ class DashboardController extends AbstractController
             }
         }
 
+        $phenology = [];
+        if ($farm !== null) {
+            try {
+                $phenology = $this->phenologyService->getCurrentPhenology($farm);
+            } catch (\Throwable) {
+                // Phenology not available — non-blocking
+            }
+        }
+
         return $this->render('dashboard/index.html.twig', [
             'farm'            => $farm,
             'weather'         => $weather,
@@ -69,6 +80,7 @@ class DashboardController extends AbstractController
             'yieldPrediction' => $farm ? $this->predictionRepository->findLatestByType($farm, 'yield') : null,
             'pestPrediction'  => $farm ? $this->predictionRepository->findLatestByType($farm, 'pest_risk') : null,
             'waterPrediction' => $farm ? $this->predictionRepository->findLatestByType($farm, 'water_stress') : null,
+            'phenology'       => $phenology,
         ]);
     }
 
