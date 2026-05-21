@@ -55,7 +55,7 @@
                 {{ eff|number_format(1) }}%
             </div>
             <div class="stress-bar mt-md">
-                <div class="stress-bar-fill {{ eff >= 60 ? 'stress-fill-none' : (eff >= 30 ? 'stress-fill-medium' : 'stress-fill-severe') }}" style="width: {{ eff }}%"></div>
+                <div class="stress-bar-fill {{ eff >= 60 ? 'stress-fill-none' : (eff >= 30 ? 'stress-fill-medium' : 'stress-fill-severe') }}" style="--bar-w: {{ eff }}%"></div>
             </div>
             {% if eff < 30 %}
             <div class="irrigation-alert irrigation-needed mt-md">

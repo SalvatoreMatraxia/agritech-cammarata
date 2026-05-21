@@ -1,8 +1,6 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.min.css';
-import { Chart, registerables } from 'chart.js';
-
-Chart.register(...registerables);
+import { Chart } from '../charts/chart-setup.js';
 
 // ── NDVI colour mapping ──────────────────────────────────────────────────────
 function ndviColor(ndvi) {

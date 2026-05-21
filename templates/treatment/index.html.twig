@@ -79,7 +79,7 @@
                         {% if eff is not null %}
                         <div class="efficacy-bar-wrap">
                             <div class="efficacy-bar {{ eff >= 60 ? 'eff-high' : (eff >= 30 ? 'eff-medium' : 'eff-low') }}"
-                                 style="width: {{ eff }}%"></div>
+                                 style="--bar-w: {{ eff }}%"></div>
                         </div>
                         <span class="efficacy-val">{{ eff|number_format(0) }}%</span>
                         {% else %}

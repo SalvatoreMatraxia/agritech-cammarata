@@ -318,7 +318,7 @@
                     <span><strong>{{ stressPct }}%</strong></span>
                 </div>
                 <div class="stress-bar">
-                    <div class="stress-bar-fill {{ stressClass }}" style="width: {{ stressPct > 100 ? 100 : stressPct }}%"></div>
+                    <div class="stress-bar-fill {{ stressClass }}" style="--bar-w: {{ stressPct > 100 ? 100 : stressPct }}%"></div>
                 </div>
             </div>
             <div class="stress-bar-wrap">
@@ -327,7 +327,7 @@
                     <span><strong>{{ wr.reserve_pct|number_format(0) }}%</strong></span>
                 </div>
                 <div class="stress-bar">
-                    <div class="reserve-bar-fill" style="width: {{ wr.reserve_pct > 100 ? 100 : wr.reserve_pct }}%"></div>
+                    <div class="reserve-bar-fill" style="--bar-w: {{ wr.reserve_pct > 100 ? 100 : wr.reserve_pct }}%"></div>
                 </div>
             </div>
             <div class="{{ wr.irrigation_needed ? 'irrigation-alert irrigation-needed' : 'irrigation-alert irrigation-ok' }}">

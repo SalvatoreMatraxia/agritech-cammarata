@@ -148,6 +148,7 @@
 
 .pheno-progress-fill {
     height: 100%;
+    width: var(--bar-w, 0%);
     background: var(--color-secondary);
     border-radius: 3px;
 }

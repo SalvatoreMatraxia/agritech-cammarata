@@ -1,6 +1,4 @@
-import { Chart, registerables } from 'chart.js';
-
-Chart.register(...registerables);
+import { Chart } from './chart-setup.js';
 
 function buildWeatherChart(canvas) {
     const labels = JSON.parse(canvas.dataset.labels || '[]');
@@ -9,6 +7,10 @@ function buildWeatherChart(canvas) {
     const rain   = JSON.parse(canvas.dataset.rain   || '[]');
 
     if (!labels.length) return null;
+
+    const style    = getComputedStyle(document.documentElement);
+    const hotColor  = style.getPropertyValue('--color-temp-hot').trim()  || '#c0392b';
+    const coldColor = style.getPropertyValue('--color-temp-cold').trim() || '#2980b9';
 
     return new Chart(canvas, {
         data: {
@@ -28,7 +30,7 @@ function buildWeatherChart(canvas) {
                     type: 'line',
                     label: 'Temp Max (°C)',
                     data: tMax,
-                    borderColor:     '#c0392b',
+                    borderColor:     hotColor,
                     backgroundColor: 'transparent',
                     pointRadius: 3,
                     tension: 0.3,
@@ -39,7 +41,7 @@ function buildWeatherChart(canvas) {
                     type: 'line',
                     label: 'Temp Min (°C)',
                     data: tMin,
-                    borderColor:     '#2980b9',
+                    borderColor:     coldColor,
                     backgroundColor: 'transparent',
                     pointRadius: 3,
                     tension: 0.3,

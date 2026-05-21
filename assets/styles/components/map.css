@@ -226,9 +226,9 @@
 
 /* Text colors intentionally darker than dot colors for legibility on white */
 .ndvi-val-dark-green  { color: var(--ndvi-dark-green); }
-.ndvi-val-light-green { color: #4a9e48; }
-.ndvi-val-yellow      { color: #9a7c00; }
-.ndvi-val-orange      { color: #c05c00; }
+.ndvi-val-light-green { color: var(--color-ndvi-text-green); }
+.ndvi-val-yellow      { color: var(--color-ndvi-text-yellow); }
+.ndvi-val-orange      { color: var(--color-ndvi-text-orange); }
 .ndvi-val-red         { color: var(--ndvi-red); }
 
 .ndvi-trend-row {
@@ -282,7 +282,7 @@
 
 .parcel-popup .popup-variety {
     font-size: 12px;
-    color: var(--color-text-secondary, #666);
+    color: var(--color-text-secondary);
     margin: 0 0 8px 0;
 }
 
@@ -295,7 +295,7 @@
 }
 
 .parcel-popup .popup-label {
-    color: #555;
+    color: var(--color-text);
 }
 
 .parcel-popup .popup-value {
@@ -305,13 +305,13 @@
 
 .parcel-popup .popup-trend {
     font-size: 12px;
-    color: #555;
+    color: var(--color-text);
 }
 
 .parcel-popup .popup-details {
     font-size: 12px;
-    color: #666;
-    border-top: 1px solid #eee;
+    color: var(--color-text-muted);
+    border-top: 1px solid var(--color-border);
     padding-top: 6px;
 }
 

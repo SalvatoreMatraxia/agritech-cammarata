@@ -22,7 +22,7 @@
 
 .data-table tbody tr:nth-child(even) { background: var(--color-bg); }
 .data-table tbody tr:nth-child(odd)  { background: var(--color-white); }
-.data-table tbody tr:hover           { background: #e4f0d5; }
+.data-table tbody tr:hover           { background: var(--color-table-hover); }
 
 .data-table td {
     padding: 0.6rem 0.9rem;
@@ -135,6 +135,7 @@
 .efficacy-bar {
     height: 100%;
     border-radius: 4px;
+    width: var(--bar-w, 0%);
 }
 
 .eff-high   { background: var(--color-success); }

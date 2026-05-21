@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registra Stagione — Agritech Cammarata{% endblock %}
+
+{% block body %}
+<div class="page-title">
+    Registra Dati Stagione
+    <small>{{ farm.name }}</small>
+</div>
+
+<div class="card card-narrow">
+    <div class="card-header">Dati fine stagione</div>
+    <div class="card-body">
+        <form method="post" action="{{ path('farm_memory_new') }}">
+
+            <div class="form-group">
+                <label class="form-label" for="year">Anno</label>
+                <input type="number" id="year" name="year" class="form-control"
+                    value="{{ currentYear }}" min="2020" max="{{ currentYear }}" required>
+            </div>
+
+            {% if predictedYield is not null %}
+            <div class="ai-prediction-box">
+                <span>Resa prevista dall'AI ({{ currentYear }}):</span>
+                <span class="ai-prediction-value">{{ predictedYield|number_format(0) }} kg</span>
+                <input type="hidden" name="predictedYieldKg" value="{{ predictedYield }}">
+            </div>
+            {% else %}
+            <div class="form-group">
+                <label class="form-label" for="predictedYieldKg">
+                    Resa prevista (kg)
+                    <span class="field-hint">— nessuna previsione AI trovata</span>
+                </label>
+                <input type="number" id="predictedYieldKg" name="predictedYieldKg"
+                    class="form-control" step="0.01" min="0" placeholder="es. 12000">
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label class="form-label" for="actualYieldKg">
+                    Resa reale (kg) <span class="field-required">*</span>
+                </label>
+                <input type="number" id="actualYieldKg" name="actualYieldKg"
+                    class="form-control" step="0.01" min="0" placeholder="es. 11500" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="actualOilLiters">Olio prodotto (litri)</label>
+                <input type="number" id="actualOilLiters" name="actualOilLiters"
+                    class="form-control" step="0.1" min="0" placeholder="es. 1800">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="oilQuality">Qualità olio</label>
+                <select id="oilQuality" name="oilQuality" class="form-control">
+                    <option value="">— Seleziona —</option>
+                    <option value="EVO">Extra Vergine di Oliva (EVO)</option>
+                    <option value="vergine">Vergine</option>
+                    <option value="lampante">Lampante</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="notes">Note</label>
+                <textarea id="notes" name="notes" rows="3" class="form-control"
+                    placeholder="Condizioni stagionali, eventi straordinari, osservazioni..."></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button type="submit" class="btn-primary">Salva stagione</button>
+                <a href="{{ path('farm_memory_index') }}" class="btn-cancel">Annulla</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

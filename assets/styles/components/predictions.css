@@ -64,7 +64,7 @@
 
 .risk-low       { background: var(--color-success-bg); color: var(--color-success-text); }
 .risk-medium    { background: var(--color-warn-bg);    color: var(--color-warn-text);    }
-.risk-high      { background: #ffe5cc; color: #7a3800; }
+.risk-high      { background: var(--color-risk-high-bg); color: var(--color-risk-high-text); }
 .risk-very-high { background: var(--color-error-bg);   color: var(--color-error-text);   }
 
 .risk-score-value {
@@ -95,19 +95,21 @@
 .stress-bar-fill {
     height: 100%;
     border-radius: 5px;
+    width: var(--bar-w, 0%);
     transition: width 0.4s ease;
 }
 
 .stress-fill-none   { background: var(--color-success); }
-.stress-fill-low    { background: #90d83b; }
+.stress-fill-low    { background: var(--color-stress-low); }
 .stress-fill-medium { background: var(--color-warning); }
-.stress-fill-high   { background: #fd7e14; }
+.stress-fill-high   { background: var(--color-stress-high); }
 .stress-fill-severe { background: var(--color-danger); }
 
 /* reserve bar (inverted — green=full, red=empty) */
 .reserve-bar-fill {
     height: 100%;
     border-radius: 5px;
+    width: var(--bar-w, 0%);
     background: linear-gradient(90deg, var(--color-danger) 0%, var(--color-warning) 40%, var(--color-success) 100%);
     transition: width 0.4s ease;
 }

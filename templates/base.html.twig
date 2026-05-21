@@ -27,6 +27,8 @@
            href="{{ path('operation_index') }}">{{ icon('wrench', 'icon nav-icon') }}<span class="nav-label">Operazioni</span></a>
         <a class="nav-link {% if app.request.attributes.get('_route') starts with 'map' %}active{% endif %}"
            href="{{ path('map_index') }}">{{ icon('map', 'icon nav-icon') }}<span class="nav-label">Mappa</span></a>
+        <a class="nav-link nav-link-desktop-only {% if app.request.attributes.get('_route') starts with 'farm_memory' %}active{% endif %}"
+           href="{{ path('farm_memory_index') }}">{{ icon('history', 'icon nav-icon') }}<span class="nav-label">Storico</span></a>
         <div class="nav-divider"></div>
         <span class="nav-user">{{ icon('user', 'icon nav-icon') }} {{ app.user.email }}</span>
         <a class="nav-link" href="{{ path('app_logout') }}">{{ icon('log-out', 'icon nav-icon') }}<span class="nav-label">Esci</span></a>

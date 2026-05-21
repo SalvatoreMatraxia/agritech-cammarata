@@ -6,6 +6,7 @@
 @import './components/predictions.css';
 @import './components/tables.css';
 @import './components/map.css';
+@import './components/memory.css';
 @import './dashboard.css';
 
 /* ── RESET ───────────────────────────────────────────────── */
@@ -25,10 +26,11 @@
     --shadow:          0 2px 8px rgba(0, 0, 0, 0.1);
 
     /* derived / backward-compat aliases */
-    --color-text-muted: #5A7A45;
-    --color-border:     #C8E0A8;
-    --color-bg-card:    #FFFFFF;
-    --nav-h:            60px;
+    --color-text-muted:    #5A7A45;
+    --color-text-secondary: #888888;
+    --color-border:        #C8E0A8;
+    --color-bg-card:       #FFFFFF;
+    --nav-h:               60px;
 
     /* ── STATUS PALETTE (badge, alert, flash) ──────────────── */
     --color-success:        #28a745;
@@ -53,6 +55,20 @@
     /* ── TEMPERATURA (forecast) ─────────────────────────────── */
     --color-temp-hot:  #c0392b;
     --color-temp-cold: #2980b9;
+
+    /* ── NDVI TEXT (darker for legibility on white bg) ──────── */
+    --color-ndvi-text-green:  #4a9e48;
+    --color-ndvi-text-yellow: #9a7c00;
+    --color-ndvi-text-orange: #c05c00;
+
+    /* ── RISK / STRESS PALETTE ──────────────────────────────── */
+    --color-risk-high-bg:   #ffe5cc;
+    --color-risk-high-text: #7a3800;
+    --color-stress-low:     #90d83b;
+    --color-stress-high:    #fd7e14;
+
+    /* ── TABLE ──────────────────────────────────────────────── */
+    --color-table-hover: #e4f0d5;
 }
 
 /* ── BASE ────────────────────────────────────────────────── */
@@ -194,6 +210,8 @@ body {
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         margin-top: 0.25rem;
     }
+
+    .nav-link-desktop-only { display: none; }
 }
 
 /* ── LAYOUT ──────────────────────────────────────────────── */

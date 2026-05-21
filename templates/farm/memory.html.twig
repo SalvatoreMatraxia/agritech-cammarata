@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Memoria Aziendale — Agritech Cammarata{% endblock %}
+
+{% block body %}
+<div class="page-title">
+    Memoria Aziendale — Storico Stagionale
+    <small>{{ farm ? farm.name : '' }}</small>
+</div>
+
+<div class="memory-actions">
+    <a href="{{ path('farm_memory_new') }}" class="btn-primary">
+        + Registra stagione
+    </a>
+</div>
+
+{% if records is empty %}
+    <div class="card">
+        <div class="card-body memory-empty">
+            <p>Nessuno storico disponibile.</p>
+            <p>I dati verranno registrati a fine stagione {{ 'now'|date('Y') + 1 }}.</p>
+        </div>
+    </div>
+{% else %}
+
+    {# ── GRAFICO RESA ──────────────────────────────────────── #}
+    <div class="card memory-chart-card">
+        <div class="card-header">Resa prevista vs reale (kg)</div>
+        <div class="card-body">
+            <div class="memory-chart-wrap">
+                <canvas id="memory-chart"
+                    data-labels="{{ records|reverse|map(r => r.year)|json_encode }}"
+                    data-predicted="{{ records|reverse|map(r => r.predictedYieldKg)|json_encode }}"
+                    data-actual="{{ records|reverse|map(r => r.actualYieldKg)|json_encode }}">
+                </canvas>
+            </div>
+        </div>
+    </div>
+
+    {# ── TABELLA STORICO ───────────────────────────────────── #}
+    <div class="card">
+        <div class="card-header">Storico stagionale</div>
+        <div class="card-body p-0">
+            <div class="memory-table-wrap">
+                <table class="memory-table">
+                    <thead>
+                        <tr>
+                            <th>Anno</th>
+                            <th class="text-right">Resa prev. (kg)</th>
+                            <th class="text-right">Resa reale (kg)</th>
+                            <th class="text-right">Errore %</th>
+                            <th class="text-right">Olio (L)</th>
+                            <th>Qualità</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for record in records %}
+                        <tr>
+                            <td class="td-year">{{ record.year }}</td>
+                            <td class="text-right">
+                                {{ record.predictedYieldKg ? record.predictedYieldKg|number_format(0) : '—' }}
+                            </td>
+                            <td class="text-right td-actual">
+                                {{ record.actualYieldKg ? record.actualYieldKg|number_format(0) : '—' }}
+                            </td>
+                            <td class="text-right">
+                                {% if record.predictionErrorPct is not null %}
+                                    <span class="{% if record.predictionErrorPct < 10 %}error-pct-good{% elseif record.predictionErrorPct < 20 %}error-pct-warn{% else %}error-pct-bad{% endif %}">
+                                        {{ record.predictionErrorPct|number_format(1) }}%
+                                    </span>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td class="text-right">
+                                {{ record.actualOilLiters ? record.actualOilLiters|number_format(0) : '—' }}
+                            </td>
+                            <td>{{ record.oilQuality ?? '—' }}</td>
+                            <td class="memory-notes">{{ record.notes ?? '' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endif %}
+{% endblock %}

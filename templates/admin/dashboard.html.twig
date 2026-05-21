@@ -1,0 +1,36 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Dashboard Admin{% endblock %}
+
+{% block main %}
+<div class="admin-stat-grid">
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">{{ users }}</div>
+        <div class="admin-stat-label">Utenti registrati</div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">{{ farms }}</div>
+        <div class="admin-stat-label">Aziende totali</div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-value admin-stat-value--accent">{{ predictionsToday }}</div>
+        <div class="admin-stat-label">Previsioni oggi</div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-value {% if activeAlerts > 0 %}admin-stat-value--danger{% else %}admin-stat-value--success{% endif %}">{{ activeAlerts }}</div>
+        <div class="admin-stat-label">Alert non letti</div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">{{ treatmentsMonth }}</div>
+        <div class="admin-stat-label">Trattamenti (mese)</div>
+    </div>
+
+</div>
+
+<p class="admin-updated">Aggiornato: {{ 'now'|date('d/m/Y H:i') }}</p>
+{% endblock %}
