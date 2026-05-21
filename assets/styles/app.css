@@ -120,6 +120,19 @@ body {
     margin: 0 0.25rem;
 }
 
+/* ── NAVBAR LINK ICONS ───────────────────────────────────── */
+.nav-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .nav-icon { display: none; }
+}
+
 /* ── HAMBURGER (hidden on desktop) ───────────────────────── */
 .navbar-hamburger {
     display: none;

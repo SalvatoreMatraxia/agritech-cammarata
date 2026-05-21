@@ -20,16 +20,16 @@
     </button>
     <div class="navbar-nav" id="navbar-menu">
         <a class="nav-link {% if app.request.attributes.get('_route') starts with 'dashboard' %}active{% endif %}"
-           href="{{ path('dashboard_index') }}">Dashboard</a>
+           href="{{ path('dashboard_index') }}">{{ icon('layout-dashboard', 'icon nav-icon') }}<span class="nav-label">Dashboard</span></a>
         <a class="nav-link {% if app.request.attributes.get('_route') starts with 'treatment' %}active{% endif %}"
-           href="{{ path('treatment_index') }}">Quaderno</a>
+           href="{{ path('treatment_index') }}">{{ icon('clipboard-list', 'icon nav-icon') }}<span class="nav-label">Quaderno</span></a>
         <a class="nav-link {% if app.request.attributes.get('_route') starts with 'operation' %}active{% endif %}"
-           href="{{ path('operation_index') }}">Operazioni</a>
+           href="{{ path('operation_index') }}">{{ icon('wrench', 'icon nav-icon') }}<span class="nav-label">Operazioni</span></a>
         <a class="nav-link {% if app.request.attributes.get('_route') starts with 'map' %}active{% endif %}"
-           href="{{ path('map_index') }}">{{ icon('map', 'icon') }} Mappa</a>
+           href="{{ path('map_index') }}">{{ icon('map', 'icon nav-icon') }}<span class="nav-label">Mappa</span></a>
         <div class="nav-divider"></div>
-        <span class="nav-user">{{ app.user.email }}</span>
-        <a class="nav-link" href="{{ path('app_logout') }}">Esci</a>
+        <span class="nav-user">{{ icon('user', 'icon nav-icon') }} {{ app.user.email }}</span>
+        <a class="nav-link" href="{{ path('app_logout') }}">{{ icon('log-out', 'icon nav-icon') }}<span class="nav-label">Esci</span></a>
     </div>
 </nav>
 {% endif %}
