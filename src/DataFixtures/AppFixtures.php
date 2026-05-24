@@ -104,7 +104,7 @@ class AppFixtures extends Fixture
                 'year'              => 2024,
                 'season'            => '2023-2024',
                 'actualYieldKg'     => 4200.0,
-                'actualOilLiters'   => 840.0,
+                'actualOilLiters'   => 779.0,  // 4200 * 0.17 / 0.916
                 'oilQuality'        => 'EVO',
                 'predictedYieldKg'  => 3800.0,
                 'predictionErrorPct'=> -10.5,
@@ -126,7 +126,7 @@ class AppFixtures extends Fixture
                 'year'              => 2025,
                 'season'            => '2024-2025',
                 'actualYieldKg'     => 2800.0,
-                'actualOilLiters'   => 560.0,
+                'actualOilLiters'   => 519.0,  // 2800 * 0.17 / 0.916
                 'oilQuality'        => 'EVO',
                 'predictedYieldKg'  => 3200.0,
                 'predictionErrorPct'=> 12.5,
@@ -147,7 +147,7 @@ class AppFixtures extends Fixture
                 'year'              => 2026,
                 'season'            => '2025-2026',
                 'actualYieldKg'     => 5100.0,
-                'actualOilLiters'   => 1020.0,
+                'actualOilLiters'   => 946.0,  // 5100 * 0.17 / 0.916
                 'oilQuality'        => 'EVO',
                 'predictedYieldKg'  => 4800.0,
                 'predictionErrorPct'=> -6.2,
@@ -185,9 +185,11 @@ class AppFixtures extends Fixture
                 ->setFarm($farm);
             $manager->persist($record);
 
-            $farmSurface = 3.0; // Azienda Matraxia — 2 parcelle × 1.5 ha
-            $kgHa       = (int) round($s['predictedYieldKg'] / $farmSurface);
-            $oilLiters  = (int) round($s['predictedYieldKg'] * 0.20);
+            $farmSurface     = 3.0;   // Azienda Matraxia — 2 parcelle × 1.5 ha
+            $extractionRate  = 0.17;  // media pesata: Nocellara 0.16 (50%) + Biancolilla 0.18 (50%)
+            $oilDensity      = 0.916; // kg/L densità olio di oliva
+            $kgHa            = (int) round($s['predictedYieldKg'] / $farmSurface);
+            $oilLiters       = (int) round($s['predictedYieldKg'] * $extractionRate / $oilDensity);
 
             $prediction = new Prediction();
             $prediction->setType('yield')

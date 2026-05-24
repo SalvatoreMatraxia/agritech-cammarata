@@ -29,6 +29,10 @@ async def predict_yield(req: YieldRequest) -> dict:
             tree_count=req.tree_count,
             variety=req.variety,
             year=req.year,
+            planting_year=req.planting_year,
+            irrigation_type=req.irrigation_type,
+            prev_year_actual_kg=req.prev_year_actual_kg,
+            farm_avg_kg=req.farm_avg_kg,
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc

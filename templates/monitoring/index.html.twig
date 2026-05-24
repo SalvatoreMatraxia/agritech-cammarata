@@ -72,40 +72,29 @@
         </div>
         {% if yieldPrediction %}
         {% set yr = yieldPrediction.result %}
+        {% set oil_per_ha = yr.oil_liters / farm.surface %}
         <div class="card-body">
-            <div class="stat-grid">
-                <div class="stat-box">
-                    <div class="stat-icon">{{ icon('scale', 'icon icon-xl') }}</div>
-                    <div class="stat-value">{{ yr.yield_kg_ha|number_format(0) }}</div>
-                    <div class="stat-label">kg/ha</div>
+            <div class="yield-split">
+                <div class="yield-col">
+                    <div class="yield-col-header">Per Ettaro</div>
+                    <div class="yield-row-value">{{ yr.yield_kg_ha|number_format(0, ',', '.') }}</div>
+                    <div class="yield-row-label">kg olive / ha</div>
+                    <div class="yield-row-value">{{ oil_per_ha|number_format(0, ',', '.') }}</div>
+                    <div class="yield-row-label">litri olio / ha</div>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-icon">{{ icon('beaker', 'icon icon-xl') }}</div>
-                    <div class="stat-value">{{ yr.oil_liters|number_format(0) }}</div>
-                    <div class="stat-label">Litri olio</div>
-                </div>
-            </div>
-            {% if yr.scenarios is defined %}
-            <div class="scenarios-grid">
-                <div class="scenario-box">
-                    <div class="scenario-label">Pessimistico</div>
-                    <div class="scenario-value">{{ yr.scenarios.pessimistico.yield_kg_ha|number_format(0) }}</div>
-                    <div class="scenario-sub">kg/ha</div>
-                </div>
-                <div class="scenario-box">
-                    <div class="scenario-label">Medio</div>
-                    <div class="scenario-value">{{ yr.scenarios.medio.yield_kg_ha|number_format(0) }}</div>
-                    <div class="scenario-sub">kg/ha</div>
-                </div>
-                <div class="scenario-box">
-                    <div class="scenario-label">Ottimistico</div>
-                    <div class="scenario-value">{{ yr.scenarios.ottimistico.yield_kg_ha|number_format(0) }}</div>
-                    <div class="scenario-sub">kg/ha</div>
+                <div class="yield-col">
+                    <div class="yield-col-header">
+                        Totale Azienda
+                        <small>(su {{ farm.surface|number_format(1, ',', '.') }} ha)</small>
+                    </div>
+                    <div class="yield-row-value">{{ yr.total_kg|number_format(0, ',', '.') }}</div>
+                    <div class="yield-row-label">kg olive totali</div>
+                    <div class="yield-row-value">{{ yr.oil_liters|number_format(0, ',', '.') }}</div>
+                    <div class="yield-row-label">litri olio totali</div>
                 </div>
             </div>
-            {% endif %}
             {% if yieldPrediction.explanationText %}
-            <div class="explanation-box">{{ yieldPrediction.explanationText }}</div>
+            <div class="explanation-box mt-md">{{ yieldPrediction.explanationText }}</div>
             {% endif %}
             <p class="prediction-meta">
                 Metodo: {{ yr.method ?? yieldPrediction.method }} ·

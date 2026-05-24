@@ -121,7 +121,7 @@ class WaterStressCalculator:
     def _economic(stress: float, surface_ha: float, needed: bool, vol_ha: float) -> dict:
         cost = vol_ha * surface_ha * WATER_COST if needed and vol_ha > 0 else 0.0
         loss_kg  = 3000 * stress * 0.35
-        loss_oil = (loss_kg * 0.175 / 0.917) * OIL_PRICE * surface_ha
+        loss_oil = (loss_kg * 0.14 / 0.916) * OIL_PRICE * surface_ha
         ratio = round(loss_oil / max(1.0, cost), 2) if cost > 0 else 0.0
         return {
             "costo_acqua_eur":      round(cost, 2),

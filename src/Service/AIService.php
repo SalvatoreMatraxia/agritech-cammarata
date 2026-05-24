@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Farm;
 use App\Entity\Prediction;
+use App\Repository\FarmSeasonRecordRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -14,28 +15,54 @@ class AIService
         private HttpClientInterface $httpClient,
         private EntityManagerInterface $em,
         private LoggerInterface $logger,
+        private FarmSeasonRecordRepository $seasonRepo,
         private string $aiServiceUrl,
     ) {}
 
     public function predictYield(Farm $farm, int $year): Prediction
     {
-        $treeCount = 0;
-        $variety   = 'Nocellara del Belice';
+        $treeCount   = 0;
+        $variety     = null;
+        $plantingYear = null;
 
         foreach ($farm->getParcels() as $parcel) {
             $treeCount += (int) $parcel->getTreeCount();
-            if ($parcel->getVariety()) {
-                $variety = $parcel->getVariety();
+            if ($variety === null && $parcel->getVariety()) {
+                $variety      = $parcel->getVariety();
+                $plantingYear = $parcel->getPlantingYear();
             }
         }
 
+        $variety ??= 'Nocellara del Belice';
+
+        // ── dati storici per fattore alternanza ───────────────────────────────
+        $records      = $this->seasonRepo->findBy(['farm' => $farm]);
+        $totalYield   = 0.0;
+        $recordCount  = 0;
+        $prevYieldKg  = null;
+
+        foreach ($records as $record) {
+            if ($record->getActualYieldKg() !== null) {
+                $totalYield  += $record->getActualYieldKg();
+                $recordCount++;
+                if ($record->getYear() === $year - 1) {
+                    $prevYieldKg = $record->getActualYieldKg();
+                }
+            }
+        }
+
+        $farmAvgKg = $recordCount > 0 ? $totalYield / $recordCount : null;
+
         $data = $this->post('/predict/yield', [
-            'latitude'   => $farm->getLatitude(),
-            'longitude'  => $farm->getLongitude(),
-            'surface_ha' => $farm->getSurface(),
-            'tree_count' => $treeCount,
-            'variety'    => $variety,
-            'year'       => $year,
+            'latitude'            => $farm->getLatitude(),
+            'longitude'           => $farm->getLongitude(),
+            'surface_ha'          => $farm->getSurface(),
+            'tree_count'          => $treeCount,
+            'variety'             => $variety,
+            'year'                => $year,
+            'planting_year'       => $plantingYear,
+            'prev_year_actual_kg' => $prevYieldKg,
+            'farm_avg_kg'         => $farmAvgKg,
         ]);
 
         return $this->persist(

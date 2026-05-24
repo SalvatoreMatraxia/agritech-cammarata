@@ -15,6 +15,10 @@ class YieldRequest(BaseModel):
     tree_count: int = Field(..., gt=0)
     variety: str
     year: int = Field(default_factory=lambda: date.today().year)
+    planting_year: Optional[int] = None          # anno impianto → fattore età
+    irrigation_type: str = Field(default="asciutto")  # asciutto | irriguo | agrivoltaico
+    prev_year_actual_kg: Optional[float] = None  # resa effettiva anno precedente (kg totali azienda)
+    farm_avg_kg: Optional[float] = None          # media resa anni storici (kg totali azienda)
 
 
 class YieldScenario(BaseModel):
@@ -30,6 +34,8 @@ class YieldResponse(BaseModel):
     oil_liters: float
     confidence: float
     method: str
+    age_factor: float
+    alternance_factor: float
     scenarios: Dict[str, YieldScenario]
     explanation_text: str
     features_used: Dict[str, Any]
