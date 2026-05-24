@@ -93,6 +93,20 @@
                     <div class="yield-row-label">litri olio totali</div>
                 </div>
             </div>
+            {% if yr.method == 'ensemble_xgb_rf' and yr.divergence_pct is defined %}
+            {% set divClass = yr.divergence_pct < 5 ? 'divergence-low' : (yr.divergence_pct < 15 ? 'divergence-medium' : 'divergence-high') %}
+            <div class="divergence-row mt-md">
+                <div class="divergence-badge {{ divClass }}">
+                    Divergenza modelli: {{ yr.divergence_pct|number_format(1) }}%
+                </div>
+                {% if yr.xgboost_prediction is defined and yr.random_forest_prediction is defined %}
+                <div class="divergence-detail">
+                    XGBoost: {{ yr.xgboost_prediction|number_format(0, ',', '.') }} kg/ha ·
+                    Random Forest: {{ yr.random_forest_prediction|number_format(0, ',', '.') }} kg/ha
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
             {% if yieldPrediction.explanationText %}
             <div class="explanation-box mt-md">{{ yieldPrediction.explanationText }}</div>
             {% endif %}
@@ -108,7 +122,8 @@
         </div>
         {% endif %}
         <div class="card-footer">
-            <form method="post" action="{{ path('monitoring_predict_yield') }}">
+            <form method="post" action="{{ path('monitoring_predict_yield') }}" class="predict-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('monitoring_predict') }}">
                 <button type="submit" class="update-btn">Aggiorna Previsione</button>
             </form>
         </div>
@@ -168,7 +183,8 @@
         </div>
         {% endif %}
         <div class="card-footer">
-            <form method="post" action="{{ path('monitoring_predict_pest') }}">
+            <form method="post" action="{{ path('monitoring_predict_pest') }}" class="predict-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('monitoring_predict') }}">
                 <button type="submit" class="update-btn">Aggiorna</button>
             </form>
         </div>
@@ -229,7 +245,8 @@
         </div>
         {% endif %}
         <div class="card-footer">
-            <form method="post" action="{{ path('monitoring_predict_water') }}">
+            <form method="post" action="{{ path('monitoring_predict_water') }}" class="predict-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('monitoring_predict') }}">
                 <button type="submit" class="update-btn">Aggiorna</button>
             </form>
         </div>

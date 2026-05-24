@@ -7,6 +7,7 @@ use App\Repository\PredictionRepository;
 use App\Service\AIService;
 use App\Service\SatelliteService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -47,8 +48,13 @@ class MonitoringController extends AbstractController
     }
 
     #[Route('/predict/yield', name: 'monitoring_predict_yield', methods: ['POST'])]
-    public function predictYield(): Response
+    public function predictYield(Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('monitoring_predict', $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token di sicurezza non valido. Ricarica la pagina e riprova.');
+            return $this->redirectToRoute('monitoring_index');
+        }
+
         /** @var User $user */
         $user = $this->getUser();
         $farm = $user->getFarms()->first() ?: null;
@@ -68,8 +74,13 @@ class MonitoringController extends AbstractController
     }
 
     #[Route('/predict/pest', name: 'monitoring_predict_pest', methods: ['POST'])]
-    public function predictPest(): Response
+    public function predictPest(Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('monitoring_predict', $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token di sicurezza non valido. Ricarica la pagina e riprova.');
+            return $this->redirectToRoute('monitoring_index');
+        }
+
         /** @var User $user */
         $user = $this->getUser();
         $farm = $user->getFarms()->first() ?: null;
@@ -89,8 +100,13 @@ class MonitoringController extends AbstractController
     }
 
     #[Route('/predict/water', name: 'monitoring_predict_water', methods: ['POST'])]
-    public function predictWater(): Response
+    public function predictWater(Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('monitoring_predict', $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token di sicurezza non valido. Ricarica la pagina e riprova.');
+            return $this->redirectToRoute('monitoring_index');
+        }
+
         /** @var User $user */
         $user = $this->getUser();
         $farm = $user->getFarms()->first() ?: null;

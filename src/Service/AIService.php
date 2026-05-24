@@ -5,17 +5,21 @@ namespace App\Service;
 use App\Entity\Farm;
 use App\Entity\Prediction;
 use App\Repository\FarmSeasonRecordRepository;
+use App\Repository\PredictionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AIService
 {
+    private const MAX_PREDICTIONS_PER_TYPE = 10;
+
     public function __construct(
         private HttpClientInterface $httpClient,
         private EntityManagerInterface $em,
         private LoggerInterface $logger,
         private FarmSeasonRecordRepository $seasonRepo,
+        private PredictionRepository $predictionRepo,
         private string $aiServiceUrl,
     ) {}
 
@@ -130,6 +134,8 @@ class AIService
         ?float $confidence = null,
         ?array $scenarios = null,
     ): Prediction {
+        $this->pruneOldPredictions($farm, $type);
+
         $prediction = (new Prediction())
             ->setFarm($farm)
             ->setType($type)
@@ -144,5 +150,18 @@ class AIService
         $this->em->flush();
 
         return $prediction;
+    }
+
+    private function pruneOldPredictions(Farm $farm, string $type): void
+    {
+        $all = $this->predictionRepo->findBy(
+            ['farm' => $farm, 'type' => $type],
+            ['createdAt' => 'DESC'],
+        );
+
+        $toDelete = array_slice($all, self::MAX_PREDICTIONS_PER_TYPE - 1);
+        foreach ($toDelete as $old) {
+            $this->em->remove($old);
+        }
     }
 }

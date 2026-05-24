@@ -39,6 +39,9 @@ class YieldResponse(BaseModel):
     scenarios: Dict[str, YieldScenario]
     explanation_text: str
     features_used: Dict[str, Any]
+    xgboost_prediction: Optional[float] = None
+    random_forest_prediction: Optional[float] = None
+    divergence_pct: Optional[float] = None
 
 
 # ── PEST ──────────────────────────────────────────────────────────────────────

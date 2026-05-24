@@ -1,4 +1,4 @@
-"""Previsione resa oliveto — XGBoost con fallback agronomico FAO."""
+"""Previsione resa oliveto — Ensemble XGBoost + Random Forest con fallback agronomico FAO."""
 from __future__ import annotations
 
 from datetime import datetime
@@ -9,7 +9,10 @@ import numpy as np
 
 from .weather_fetcher import fetch_historical
 
-MODEL_PATH = Path(__file__).parent.parent.parent / "trained_models" / "yield_xgboost.pkl"
+_MODELS_DIR = Path(__file__).parent.parent.parent / "trained_models"
+MODEL_PATH  = _MODELS_DIR / "yield_xgboost.pkl"       # backward-compat alias
+XGB_PATH    = _MODELS_DIR / "yield_xgboost.pkl"
+RF_PATH     = _MODELS_DIR / "yield_random_forest.pkl"
 
 FEATURE_COLS = [
     "pioggia_annua_mm",
@@ -82,18 +85,24 @@ AGE_PRODUCTION_FACTOR: dict[int, float] = {
 
 class YieldPredictor:
     def __init__(self) -> None:
-        self.model = None
+        self.xgb_model = None
+        self.rf_model  = None
+        # backward-compat: single model reference used by _predict_ml fallback
+        self.model        = None
         self.model_loaded = False
         self._try_load()
 
     def _try_load(self) -> None:
-        if MODEL_PATH.exists():
-            try:
-                import joblib
-                self.model = joblib.load(MODEL_PATH)
-                self.model_loaded = True
-            except Exception:
-                pass
+        try:
+            import joblib
+            if XGB_PATH.exists():
+                self.xgb_model = joblib.load(XGB_PATH)
+                self.model     = self.xgb_model   # backward compat
+            if RF_PATH.exists():
+                self.rf_model = joblib.load(RF_PATH)
+            self.model_loaded = self.xgb_model is not None or self.rf_model is not None
+        except Exception:
+            pass
 
     # ── public ────────────────────────────────────────────────────────────────
 
@@ -119,11 +128,25 @@ class YieldPredictor:
         v_mult      = VARIETY_MULTIPLIER.get(variety_key, 1.00)
         oil_rate    = EXTRACTION_RATES.get(variety_key, _DEFAULT_EXTRACTION)
 
-        # ── fattore meteo (normalizzato rispetto alla resa di riferimento) ────
-        if self.model_loaded and features:
-            raw_yield, method = self._predict_ml(features)
+        # ── previsione meteo (raw, normalizzata intorno a _REF_YIELD) ──────────
+        xgb_raw: Optional[float] = None
+        rf_raw:  Optional[float] = None
+
+        if features:
+            if self.xgb_model is not None:
+                xgb_raw = self._run_model(self.xgb_model, features)
+            if self.rf_model is not None:
+                rf_raw = self._run_model(self.rf_model, features)
+
+        if xgb_raw is not None and rf_raw is not None:
+            raw_yield, method, confidence, divergence_pct = self._ensemble(xgb_raw, rf_raw)
+        elif xgb_raw is not None:
+            raw_yield, method, confidence, divergence_pct = xgb_raw, "xgboost", 0.70, None
+        elif rf_raw is not None:
+            raw_yield, method, confidence, divergence_pct = rf_raw, "random_forest", 0.65, None
         else:
             raw_yield, method = self._predict_agronomic(features)
+            confidence, divergence_pct = 0.50, None
 
         meteo_factor = raw_yield / _REF_YIELD
 
@@ -135,35 +158,56 @@ class YieldPredictor:
         # ── calcolo resa ──────────────────────────────────────────────────────
         yield_kg_ha = base_yield * meteo_factor * v_mult * age_f * alt_f
         total_kg    = yield_kg_ha * surface_ha
-        oil_kg      = total_kg * oil_rate
-        oil_liters  = oil_kg / _OIL_DENSITY
+        oil_liters  = (total_kg * oil_rate) / _OIL_DENSITY
 
-        confidence = 0.78 if self.model_loaded else 0.55
-
-        # ── scenari ───────────────────────────────────────────────────────────
-        scenarios = {
-            "ottimistico":  self._scenario(yield_kg_ha, total_kg, oil_liters, 1.25, "25%"),
-            "medio":        self._scenario(yield_kg_ha, total_kg, oil_liters, 1.00, "50%"),
-            "pessimistico": self._scenario(yield_kg_ha, total_kg, oil_liters, 0.70, "25%"),
-        }
+        # ── scenari: pessimistico usa min(xgb,rf), ottimistico usa max(xgb,rf) ─
+        if xgb_raw is not None and rf_raw is not None:
+            agro = base_yield * v_mult * age_f * alt_f / _REF_YIELD
+            min_yld = min(xgb_raw, rf_raw) / _REF_YIELD * base_yield * v_mult * age_f * alt_f
+            max_yld = max(xgb_raw, rf_raw) / _REF_YIELD * base_yield * v_mult * age_f * alt_f
+            scenarios = {
+                "pessimistico": self._scenario_from_yield(min_yld * 0.80, surface_ha, oil_rate, "25%"),
+                "medio":        self._scenario_from_yield(yield_kg_ha,     surface_ha, oil_rate, "50%"),
+                "ottimistico":  self._scenario_from_yield(max_yld * 1.15,  surface_ha, oil_rate, "25%"),
+            }
+        else:
+            scenarios = {
+                "pessimistico": self._scenario(yield_kg_ha, total_kg, oil_liters, 0.70, "25%"),
+                "medio":        self._scenario(yield_kg_ha, total_kg, oil_liters, 1.00, "50%"),
+                "ottimistico":  self._scenario(yield_kg_ha, total_kg, oil_liters, 1.25, "25%"),
+            }
 
         age = (year - planting_year) if planting_year else None
 
-        return {
-            "yield_kg_ha":     round(yield_kg_ha, 1),
-            "total_kg":        round(total_kg, 1),
-            "oil_liters":      round(oil_liters, 1),
-            "confidence":      confidence,
-            "method":          method,
-            "age_factor":      round(age_f, 2),
+        result: dict = {
+            "yield_kg_ha":       round(yield_kg_ha, 1),
+            "total_kg":          round(total_kg, 1),
+            "oil_liters":        round(oil_liters, 1),
+            "confidence":        confidence,
+            "method":            method,
+            "age_factor":        round(age_f, 2),
             "alternance_factor": round(alt_f, 2),
-            "scenarios":       scenarios,
-            "explanation_text": self._explain(
+            "scenarios":         scenarios,
+            "explanation_text":  self._explain(
                 features, yield_kg_ha, oil_liters, variety,
                 oil_rate, age_f, age, alt_f, alt_label, method,
+                xgb_raw, rf_raw, divergence_pct,
             ),
-            "features_used":   {k: round(v, 2) for k, v in features.items()} if features else {},
+            "features_used": {k: round(v, 2) for k, v in features.items()} if features else {},
         }
+
+        if xgb_raw is not None:
+            result["xgboost_prediction"] = round(
+                xgb_raw / _REF_YIELD * base_yield * v_mult * age_f * alt_f, 1
+            )
+        if rf_raw is not None:
+            result["random_forest_prediction"] = round(
+                rf_raw / _REF_YIELD * base_yield * v_mult * age_f * alt_f, 1
+            )
+        if divergence_pct is not None:
+            result["divergence_pct"] = round(divergence_pct, 1)
+
+        return result
 
     # ── private ───────────────────────────────────────────────────────────────
 
@@ -234,10 +278,28 @@ class YieldPredictor:
             "giorni_caldo":         float(hot_days),
         }
 
-    def _predict_ml(self, features: dict) -> tuple[float, str]:
+    @staticmethod
+    def _run_model(model, features: dict) -> float:
         X = np.array([[features[f] for f in FEATURE_COLS]])
-        pred = float(self.model.predict(X)[0])
-        return max(800.0, min(6000.0, pred)), "xgboost"
+        return float(np.clip(model.predict(X)[0], 800.0, 6000.0))
+
+    @staticmethod
+    def _ensemble(xgb_raw: float, rf_raw: float) -> tuple[float, str, float, float]:
+        ensemble = xgb_raw * 0.6 + rf_raw * 0.4
+        divergence = abs(xgb_raw - rf_raw) / ensemble
+        if divergence < 0.05:
+            confidence = 0.90
+        elif divergence < 0.10:
+            confidence = 0.80
+        elif divergence < 0.20:
+            confidence = 0.65
+        else:
+            confidence = 0.50
+        return ensemble, "ensemble_xgb_rf", confidence, divergence * 100
+
+    # kept for backward-compat (single-model path)
+    def _predict_ml(self, features: dict) -> tuple[float, str]:
+        return self._run_model(self.xgb_model or self.rf_model, features), "xgboost"
 
     def _predict_agronomic(self, features: Optional[dict]) -> tuple[float, str]:
         """Restituisce un valore normalizzato intorno a _REF_YIELD (3000)."""
@@ -284,6 +346,17 @@ class YieldPredictor:
             "probability": prob,
         }
 
+    @staticmethod
+    def _scenario_from_yield(ykha: float, surface_ha: float, oil_rate: float, prob: str) -> dict:
+        tkg = ykha * surface_ha
+        oil = (tkg * oil_rate) / _OIL_DENSITY
+        return {
+            "yield_kg_ha": round(ykha),
+            "total_kg":    round(tkg),
+            "oil_liters":  round(oil),
+            "probability": prob,
+        }
+
     def _explain(
         self,
         features: Optional[dict],
@@ -296,6 +369,9 @@ class YieldPredictor:
         alt_factor: float,
         alt_label: str,
         method: str,
+        xgb_raw: Optional[float] = None,
+        rf_raw: Optional[float] = None,
+        divergence_pct: Optional[float] = None,
     ) -> str:
         age_str = (
             f"{age_factor * 100:.0f}% (anno {age} dal trapianto)"
@@ -328,24 +404,45 @@ class YieldPredictor:
 
             hot = features["giorni_caldo"]
             if hot > 12:
-                parts.append(f"{hot} giorni con T>35°C → mortalità polline elevata")
+                parts.append(f"{hot:.0f} giorni con T>35°C → mortalità polline elevata")
 
             frost = features["giorni_gelo"]
             if frost > 2:
-                parts.append(f"{frost} giorni di gelo → possibile danno fioritura")
+                parts.append(f"{frost:.0f} giorni di gelo → possibile danno fioritura")
 
-        label = (
-            "modello XGBoost (calibrato su dati ISTAT Agrigento 2005-2024)"
-            if "xgboost" in method
-            else "modello agronomico FAO"
-        )
         meteo_summary = " | ".join(parts) + "." if parts else "Dati meteo non disponibili."
 
+        if method == "ensemble_xgb_rf" and xgb_raw is not None and rf_raw is not None and divergence_pct is not None:
+            ensemble_intro = (
+                f"Previsione ensemble (XGBoost: {xgb_raw:.0f} kg/ha meteo-raw, "
+                f"Random Forest: {rf_raw:.0f} kg/ha meteo-raw, media pesata 60/40). "
+                f"Divergenza modelli: {divergence_pct:.1f}% → confidenza {self._conf_label(divergence_pct)}."
+            )
+            if divergence_pct >= 20:
+                ensemble_intro += " I modelli non concordano — previsione incerta, raccomandata cautela."
+        elif "xgboost" in method:
+            ensemble_intro = "Modello XGBoost (calibrato su dati ISTAT Agrigento 2005-2024)."
+        elif "random_forest" in method:
+            ensemble_intro = "Modello Random Forest."
+        else:
+            ensemble_intro = "Modello agronomico FAO (fallback — dati meteo non disponibili)."
+
         return (
-            f"Resa stimata {yield_kg_ha:.0f} kg/ha per {variety} ({label}). "
-            f"Resa olio {oil_rate * 100:.0f}% ({variety}). "
-            f"Fattore età pianta: {age_str}. "
+            f"{ensemble_intro} "
+            f"Resa stimata {yield_kg_ha:.0f} kg/ha per {variety} "
+            f"(estrazione olio {oil_rate * 100:.0f}%). "
+            f"Fattore età: {age_str}. "
             f"Fattore alternanza: {alt_label}. "
             f"Produzione olio stimata: {oil_liters:.0f} litri. "
             f"{meteo_summary}"
         )
+
+    @staticmethod
+    def _conf_label(divergence_pct: float) -> str:
+        if divergence_pct < 5:
+            return "90% (alta)"
+        if divergence_pct < 10:
+            return "80%"
+        if divergence_pct < 20:
+            return "65%"
+        return "50% (bassa)"
