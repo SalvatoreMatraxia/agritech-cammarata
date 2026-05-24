@@ -2,7 +2,7 @@
 .map-layout {
     display: flex;
     flex-direction: row;
-    height: calc(100vh - var(--nav-h));
+    height: 100vh;
     overflow: hidden;
 }
 
@@ -321,9 +321,9 @@
 
 /* ── MOBILE (≤ 768px) ────────────────────────────────────── */
 @media (max-width: 768px) {
-    /* Mappa occupa TUTTO lo schermo */
+    /* Mappa occupa lo spazio sotto il mobile header */
     .map-layout {
-        height: calc(100vh - var(--nav-h));
+        height: calc(100vh - var(--mobile-header-h));
         overflow: hidden;
     }
 

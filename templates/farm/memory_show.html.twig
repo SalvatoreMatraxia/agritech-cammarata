@@ -1,0 +1,214 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Stagione {{ record.year }} — Memoria Aziendale{% endblock %}
+
+{% block body %}
+<div class="page-title">
+    Stagione {{ record.season }}
+    <small>{{ farm.name }}</small>
+</div>
+
+<div class="memory-back-row">
+    <a href="{{ path('farm_memory_index') }}" class="btn-cancel">
+        {{ icon('arrow-left', 'icon icon-sm') }} Torna allo storico
+    </a>
+</div>
+
+<div class="memory-show-grid">
+
+    {# ── RIEPILOGO ──────────────────────────────────────────── #}
+    <div class="card memory-show-wide">
+        <div class="card-header">
+            {{ icon('calendar', 'icon') }} Riepilogo stagione {{ record.year }}
+        </div>
+        <div class="card-body">
+            {% if record.notes %}
+            <p class="memory-show-notes">{{ record.notes }}</p>
+            {% else %}
+            <p class="memory-empty-inline">Nessuna nota registrata per questa stagione.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {# ── PRODUZIONE ─────────────────────────────────────────── #}
+    <div class="card">
+        <div class="card-header">
+            {{ icon('bar-chart-2', 'icon') }} Produzione
+        </div>
+        <div class="card-body">
+            <div class="info-list">
+                <div class="info-row">
+                    <span class="label">Resa reale</span>
+                    <span class="value">{{ record.actualYieldKg ? record.actualYieldKg|number_format(0) ~ ' kg' : '—' }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Olio prodotto</span>
+                    <span class="value">{{ record.actualOilLiters ? record.actualOilLiters|number_format(0) ~ ' litri' : '—' }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Qualità</span>
+                    <span class="value">{{ record.oilQuality ?? '—' }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Resa prevista dal modello</span>
+                    <span class="value">{{ record.predictedYieldKg ? record.predictedYieldKg|number_format(0) ~ ' kg' : '—' }}</span>
+                </div>
+                {% if record.predictionErrorPct is not null %}
+                    {% set errAbs = record.predictionErrorPct|abs %}
+                    <div class="info-row">
+                        <span class="label">Errore previsione</span>
+                        <span class="value">
+                            <span class="{% if errAbs < 10 %}error-pct-good{% elseif errAbs < 20 %}error-pct-warn{% else %}error-pct-bad{% endif %}">
+                                {{ record.predictionErrorPct > 0 ? '+' : '' }}{{ record.predictionErrorPct|number_format(1) }}%
+                            </span>
+                            <span class="memory-error-hint">({{ record.predictionErrorPct < 0 ? 'modello aveva sottostimato' : 'modello aveva sovrastimato' }})</span>
+                        </span>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if record.predictedYieldKg and record.actualYieldKg %}
+            <div class="memory-show-chart-wrap">
+                <canvas data-chart="memory-bar"
+                    data-predicted="{{ record.predictedYieldKg }}"
+                    data-actual="{{ record.actualYieldKg }}"
+                    data-year="{{ record.year }}">
+                </canvas>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# ── METEO ──────────────────────────────────────────────── #}
+    {% set weather = record.weatherSummary %}
+    <div class="card">
+        <div class="card-header">
+            {{ icon('cloud-sun', 'icon') }} Meteo della stagione
+        </div>
+        <div class="card-body">
+            {% if weather %}
+            <div class="info-list">
+                {% if weather.temp_avg_spring is defined %}
+                <div class="info-row">
+                    <span class="label">Temp. media primavera</span>
+                    <span class="value">{{ weather.temp_avg_spring }}°C</span>
+                </div>
+                {% endif %}
+                {% if weather.temp_avg_summer is defined %}
+                <div class="info-row">
+                    <span class="label">Temp. media estate</span>
+                    <span class="value">{{ weather.temp_avg_summer }}°C</span>
+                </div>
+                {% endif %}
+                {% if weather.rain_total is defined %}
+                <div class="info-row">
+                    <span class="label">Pioggia totale annua</span>
+                    <span class="value">{{ weather.rain_total }} mm</span>
+                </div>
+                {% endif %}
+                {% if weather.frost_days is defined %}
+                <div class="info-row">
+                    <span class="label">Giorni di gelo</span>
+                    <span class="value">{{ weather.frost_days }}</span>
+                </div>
+                {% endif %}
+                {% if weather.heat_days is defined %}
+                <div class="info-row">
+                    <span class="label">Giorni di caldo estremo</span>
+                    <span class="value">{{ weather.heat_days }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="memory-show-radar-wrap">
+                <canvas data-chart="memory-radar"
+                    data-weather="{{ weather|json_encode }}">
+                </canvas>
+            </div>
+            {% else %}
+            <p class="memory-empty-inline">Dati meteo non disponibili.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {# ── EVENTI FITOSANITARI ────────────────────────────────── #}
+    <div class="card">
+        <div class="card-header">
+            {{ icon('bug', 'icon') }} Eventi fitosanitari
+        </div>
+        <div class="card-body">
+            {% set pestEvents    = record.pestEvents ?? [] %}
+            {% set diseaseEvents = record.diseaseEvents ?? [] %}
+
+            {% if pestEvents is empty and diseaseEvents is empty %}
+            <p class="memory-empty-inline">Nessun evento registrato.</p>
+            {% else %}
+
+                {% if pestEvents is not empty %}
+                <div class="phyto-section-label">Parassiti</div>
+                <div class="phyto-event-list">
+                    {% for ev in pestEvents %}
+                    <div class="phyto-event-item">
+                        <span class="phyto-event-icon">{{ icon('bug', 'icon icon-sm') }}</span>
+                        <div class="phyto-event-body">
+                            <span class="phyto-event-type">{{ ev.type|replace({'_': ' '})|capitalize }}</span>
+                            <span class="phyto-event-date">{{ ev.date }}</span>
+                        </div>
+                        <span class="severity-badge severity-{{ ev.severity }}">{{ ev.severity }}</span>
+                        {% if ev.confirmed %}
+                        <span class="phyto-confirmed">Confermato</span>
+                        {% else %}
+                        <span class="phyto-suspected">Sospetto</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if diseaseEvents is not empty %}
+                <div class="phyto-section-label {{ pestEvents is not empty ? 'phyto-section-label--gap' : '' }}">Malattie</div>
+                <div class="phyto-event-list">
+                    {% for ev in diseaseEvents %}
+                    <div class="phyto-event-item">
+                        <span class="phyto-event-icon">{{ icon('leaf', 'icon icon-sm') }}</span>
+                        <div class="phyto-event-body">
+                            <span class="phyto-event-type">{{ ev.type|replace({'_': ' '})|capitalize }}</span>
+                            <span class="phyto-event-date">{{ ev.date }}</span>
+                        </div>
+                        <span class="severity-badge severity-{{ ev.severity }}">{{ ev.severity }}</span>
+                        {% if ev.confirmed %}
+                        <span class="phyto-confirmed">Confermato</span>
+                        {% else %}
+                        <span class="phyto-suspected">Sospetto</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+            {% endif %}
+        </div>
+    </div>
+
+    {# ── GESTIONE ───────────────────────────────────────────── #}
+    <div class="card">
+        <div class="card-header">
+            {{ icon('settings', 'icon') }} Gestione
+        </div>
+        <div class="card-body">
+            <div class="info-list">
+                <div class="info-row">
+                    <span class="label">Trattamenti effettuati</span>
+                    <span class="value">{{ record.treatmentsCount }}</span>
+                </div>
+                {% if record.irrigationTotalMc %}
+                <div class="info-row">
+                    <span class="label">Irrigazione totale</span>
+                    <span class="value">{{ record.irrigationTotalMc|number_format(0) }} m³</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

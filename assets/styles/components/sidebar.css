@@ -1,0 +1,202 @@
+/* ── APP SIDEBAR ─────────────────────────────────────────── */
+.app-sidebar {
+    width: var(--sidebar-w);
+    background: var(--color-primary);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+}
+
+.app-sidebar::-webkit-scrollbar { display: none; }
+
+/* ── LOGO ────────────────────────────────────────────────── */
+.app-sidebar-logo {
+    padding: 1.25rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-shrink: 0;
+    text-decoration: none;
+    color: var(--color-white);
+    letter-spacing: 0.01em;
+}
+
+.app-sidebar-logo .icon {
+    width: 1.35rem;
+    height: 1.35rem;
+    flex-shrink: 0;
+}
+
+/* ── NAV LINKS ───────────────────────────────────────────── */
+.app-sidebar-nav {
+    flex: 1;
+    padding: 0.5rem 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    color: rgba(255, 255, 255, 0.72);
+    text-decoration: none;
+    font-size: 0.875rem;
+    border-left: 3px solid transparent;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    min-height: 44px;
+}
+
+.app-sidebar-link:hover {
+    color: var(--color-white);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.app-sidebar-link.active {
+    color: var(--color-white);
+    background: rgba(255, 255, 255, 0.15);
+    border-left-color: var(--color-accent);
+    font-weight: 600;
+}
+
+.app-sidebar-link .icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex-shrink: 0;
+    opacity: 0.72;
+}
+
+.app-sidebar-link:hover .icon,
+.app-sidebar-link.active .icon { opacity: 1; }
+
+/* ── USER SECTION ────────────────────────────────────────── */
+.app-sidebar-user {
+    padding: 0.9rem 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    flex-shrink: 0;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.app-sidebar-user-email {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.app-sidebar-user-email .icon {
+    width: 0.9rem;
+    height: 0.9rem;
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.app-sidebar-logout {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    font-size: 0.78rem;
+    transition: color 0.15s;
+    min-height: 32px;
+}
+
+.app-sidebar-logout:hover { color: var(--color-white); }
+.app-sidebar-logout .icon { width: 0.9rem; height: 0.9rem; flex-shrink: 0; }
+
+/* ── OVERLAY (mobile only, controlled by CSS sibling selector) */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 999;
+    cursor: pointer;
+}
+
+.app-sidebar.open ~ .sidebar-overlay { display: block; }
+
+/* ── APP BODY (content area) ─────────────────────────────── */
+.app-body {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+}
+
+.app-body.no-sidebar { margin-left: 0; }
+
+/* ── MOBILE HEADER ───────────────────────────────────────── */
+.mobile-header { display: none; }
+
+/* ── MOBILE ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .app-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.28s ease;
+        width: 280px;
+        top: 0;
+    }
+
+    .app-sidebar.open { transform: translateX(0); }
+
+    .app-body {
+        margin-left: 0;
+        padding-top: var(--mobile-header-h);
+    }
+
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0 1rem;
+        height: var(--mobile-header-h);
+        background: var(--color-primary);
+        color: var(--color-white);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 500;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    .mobile-header-brand {
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+    }
+
+    .sidebar-hamburger {
+        background: none;
+        border: none;
+        color: var(--color-white);
+        cursor: pointer;
+        padding: 0.3rem;
+        border-radius: 6px;
+        min-height: 44px;
+        min-width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+    }
+
+    .sidebar-hamburger:hover { background: rgba(255, 255, 255, 0.15); }
+}

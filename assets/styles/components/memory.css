@@ -153,3 +153,153 @@
 @media (max-width: 480px) {
     .btn-row { flex-direction: column; }
 }
+
+/* ── SHOW PAGE — LAYOUT ──────────────────────────────────── */
+.memory-back-row {
+    margin-bottom: 1rem;
+}
+
+.memory-show-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+.memory-show-wide {
+    grid-column: 1 / -1;
+}
+
+/* ── SHOW PAGE — TESTO ───────────────────────────────────── */
+.memory-show-notes {
+    font-size: 0.95rem;
+    color: var(--color-text);
+    line-height: 1.65;
+}
+
+.memory-empty-inline {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.memory-error-hint {
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--color-text-muted);
+    margin-left: 0.3rem;
+}
+
+/* ── SHOW PAGE — GRAFICI ─────────────────────────────────── */
+.memory-show-chart-wrap,
+.memory-show-radar-wrap {
+    height: 200px;
+    position: relative;
+    margin-top: 1.25rem;
+}
+
+/* ── EVENTI FITOSANITARI ─────────────────────────────────── */
+.phyto-section-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.phyto-section-label--gap {
+    margin-top: 1rem;
+}
+
+.phyto-event-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.phyto-event-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.phyto-event-icon { flex-shrink: 0; }
+
+.phyto-event-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+}
+
+.phyto-event-type {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.phyto-event-date {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+/* ── SEVERITY BADGES ─────────────────────────────────────── */
+.severity-badge {
+    display: inline-block;
+    border-radius: 10px;
+    padding: 0.15rem 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.severity-basso { background: var(--color-success-bg); color: var(--color-success-text); }
+.severity-medio { background: var(--color-warn-bg);    color: var(--color-warn-text);    }
+.severity-alto  { background: var(--color-error-bg);   color: var(--color-error-text);   }
+
+/* ── CONFIRMED / SUSPECTED ───────────────────────────────── */
+.phyto-confirmed {
+    font-size: 0.72rem;
+    color: var(--color-success-text);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.phyto-suspected {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    white-space: nowrap;
+}
+
+/* ── RIGHE CLICCABILI ────────────────────────────────────── */
+.memory-table tr[data-href] {
+    cursor: pointer;
+}
+
+.memory-table .td-action {
+    text-align: right;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    width: 1%;
+}
+
+/* ── MOBILE ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .memory-show-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .memory-show-chart-wrap,
+    .memory-show-radar-wrap {
+        height: 180px;
+    }
+}

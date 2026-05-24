@@ -4,5 +4,6 @@ import './js/navbar-mobile.js';
 import './js/charts/weather-chart.js';
 import './js/charts/phenology-timeline.js';
 import './js/charts/memory-chart.js';
+import './js/charts/memory-charts.js';
 import './js/treatment-form.js';
 import './js/map/ndvi-map.js';

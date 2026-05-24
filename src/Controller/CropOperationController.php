@@ -59,6 +59,25 @@ class CropOperationController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}', name: 'operation_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function show(CropOperation $operation): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $farm = $user->getFarms()->first() ?: null;
+
+        if ($farm === null || $operation->getParcel()->getFarm()->getId() !== $farm->getId()) {
+            throw $this->createNotFoundException();
+        }
+
+        $typeInfo = self::TYPES[$operation->getType()] ?? ['label' => ucfirst($operation->getType()), 'icon' => 'leaf'];
+
+        return $this->render('operation/show.html.twig', [
+            'operation' => $operation,
+            'typeInfo'  => $typeInfo,
+        ]);
+    }
+
     #[Route('/new', name: 'operation_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {

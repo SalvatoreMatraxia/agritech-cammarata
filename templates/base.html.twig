@@ -11,40 +11,71 @@
 <body>
 
 {% if app.user %}
-<nav class="navbar">
-    <a class="navbar-brand" href="{{ path('dashboard_index') }}">
-        <span class="olive">{{ icon('leaf', 'icon icon-brand') }}</span> Agritech Cammarata
+<aside class="app-sidebar" id="app-sidebar">
+
+    <a class="app-sidebar-logo" href="{{ path('dashboard_index') }}">
+        {{ icon('leaf', 'icon') }} Agritech Cammarata
     </a>
-    <button class="navbar-hamburger" id="navbar-hamburger" aria-label="Apri menu" aria-expanded="false">
-        {{ icon('menu', 'icon icon-nav') }}
-    </button>
-    <div class="navbar-nav" id="navbar-menu">
-        <a class="nav-link {% if app.request.attributes.get('_route') starts with 'dashboard' %}active{% endif %}"
-           href="{{ path('dashboard_index') }}">{{ icon('layout-dashboard', 'icon nav-icon') }}<span class="nav-label">Dashboard</span></a>
-        <a class="nav-link {% if app.request.attributes.get('_route') starts with 'treatment' %}active{% endif %}"
-           href="{{ path('treatment_index') }}">{{ icon('clipboard-list', 'icon nav-icon') }}<span class="nav-label">Quaderno</span></a>
-        <a class="nav-link {% if app.request.attributes.get('_route') starts with 'operation' %}active{% endif %}"
-           href="{{ path('operation_index') }}">{{ icon('wrench', 'icon nav-icon') }}<span class="nav-label">Operazioni</span></a>
-        <a class="nav-link {% if app.request.attributes.get('_route') starts with 'map' %}active{% endif %}"
-           href="{{ path('map_index') }}">{{ icon('map', 'icon nav-icon') }}<span class="nav-label">Mappa</span></a>
-        <a class="nav-link nav-link-desktop-only {% if app.request.attributes.get('_route') starts with 'farm_memory' %}active{% endif %}"
-           href="{{ path('farm_memory_index') }}">{{ icon('history', 'icon nav-icon') }}<span class="nav-label">Storico</span></a>
-        <div class="nav-divider"></div>
-        <span class="nav-user">{{ icon('user', 'icon nav-icon') }} {{ app.user.email }}</span>
-        <a class="nav-link" href="{{ path('app_logout') }}">{{ icon('log-out', 'icon nav-icon') }}<span class="nav-label">Esci</span></a>
+
+    <nav class="app-sidebar-nav">
+        <a class="app-sidebar-link {% if app.request.attributes.get('_route') starts with 'dashboard' %}active{% endif %}"
+           href="{{ path('dashboard_index') }}">
+            {{ icon('layout-dashboard', 'icon') }}<span>Dashboard</span>
+        </a>
+        <a class="app-sidebar-link {% if app.request.attributes.get('_route') starts with 'monitoring' %}active{% endif %}"
+           href="{{ path('monitoring_index') }}">
+            {{ icon('activity', 'icon') }}<span>Monitoring</span>
+        </a>
+        <a class="app-sidebar-link {% if app.request.attributes.get('_route') starts with 'treatment' %}active{% endif %}"
+           href="{{ path('treatment_index') }}">
+            {{ icon('clipboard-list', 'icon') }}<span>Quaderno</span>
+        </a>
+        <a class="app-sidebar-link {% if app.request.attributes.get('_route') starts with 'operation' %}active{% endif %}"
+           href="{{ path('operation_index') }}">
+            {{ icon('wrench', 'icon') }}<span>Operazioni</span>
+        </a>
+        <a class="app-sidebar-link {% if app.request.attributes.get('_route') starts with 'map' %}active{% endif %}"
+           href="{{ path('map_index') }}">
+            {{ icon('map', 'icon') }}<span>Mappa</span>
+        </a>
+        <a class="app-sidebar-link {% if app.request.attributes.get('_route') starts with 'farm_memory' %}active{% endif %}"
+           href="{{ path('farm_memory_index') }}">
+            {{ icon('history', 'icon') }}<span>Storico</span>
+        </a>
+    </nav>
+
+    <div class="app-sidebar-user">
+        <div class="app-sidebar-user-email">
+            {{ icon('user', 'icon') }}<span>{{ app.user.email }}</span>
+        </div>
+        <a class="app-sidebar-logout" href="{{ path('app_logout') }}">
+            {{ icon('log-out', 'icon') }}<span>Esci</span>
+        </a>
     </div>
-</nav>
+
+</aside>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<header class="mobile-header">
+    <button class="sidebar-hamburger" id="sidebar-hamburger" aria-label="Apri menu" aria-expanded="false">
+        {{ icon('menu', 'icon') }}
+    </button>
+    <span class="mobile-header-brand">Agritech Cammarata</span>
+</header>
 {% endif %}
 
-{% block main %}
-<main class="main-content">
-    {% for msg in app.flashes('success') %}<div class="flash flash-success">{{ msg }}</div>{% endfor %}
-    {% for msg in app.flashes('warning') %}<div class="flash flash-warning">{{ msg }}</div>{% endfor %}
-    {% for msg in app.flashes('error')   %}<div class="flash flash-error">{{ msg }}</div>{% endfor %}
+<div class="app-body{% if not app.user %} no-sidebar{% endif %}">
+    {% block main %}
+    <main class="main-content">
+        {% for msg in app.flashes('success') %}<div class="flash flash-success">{{ msg }}</div>{% endfor %}
+        {% for msg in app.flashes('warning') %}<div class="flash flash-warning">{{ msg }}</div>{% endfor %}
+        {% for msg in app.flashes('error')   %}<div class="flash flash-error">{{ msg }}</div>{% endfor %}
 
-    {% block body %}{% endblock %}
-</main>
-{% endblock %}
+        {% block body %}{% endblock %}
+    </main>
+    {% endblock %}
+</div>
 
 {% block javascripts %}{% endblock %}
 </body>

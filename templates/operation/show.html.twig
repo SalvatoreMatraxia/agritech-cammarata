@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ typeInfo.label }} {{ operation.date|date('d/m/Y') }} — Operazioni{% endblock %}
+
+{% block body %}
+<div class="page-title">
+    {{ typeInfo.label }} del {{ operation.date|date('d/m/Y') }}
+    <small><a href="{{ path('operation_index') }}">← Registro Operazioni</a></small>
+</div>
+
+<div class="detail-grid">
+
+    {# ── DETTAGLI PRINCIPALI ────────────────────────────────── #}
+    <div class="card">
+        <div class="card-header">
+            {{ icon(typeInfo.icon, 'icon') }} Dettagli operazione
+        </div>
+        <div class="card-body">
+            <div class="info-list">
+                <div class="info-row">
+                    <span class="label">Data</span>
+                    <span class="value">{{ operation.date|date('d/m/Y') }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Tipo</span>
+                    <span class="value">
+                        <span class="op-type-badge">{{ icon(typeInfo.icon, 'icon icon-sm') }} {{ typeInfo.label }}</span>
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Parcella</span>
+                    <span class="value">{{ operation.parcel.name }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Varietà</span>
+                    <span class="value">{{ operation.parcel.variety }}</span>
+                </div>
+                {% if operation.durationHours %}
+                <div class="info-row">
+                    <span class="label">Durata</span>
+                    <span class="value">{{ operation.durationHours|number_format(1) }} ore</span>
+                </div>
+                {% endif %}
+                <div class="info-row">
+                    <span class="label">Operatore</span>
+                    <span class="value">{{ operation.operator ?? '—' }}</span>
+                </div>
+                {% if operation.costEur is not null %}
+                <div class="info-row">
+                    <span class="label">Costo</span>
+                    <span class="value">{{ operation.costEur > 0 ? operation.costEur|number_format(2) ~ ' €' : 'Nessun costo' }}</span>
+                </div>
+                {% endif %}
+                <div class="info-row">
+                    <span class="label">Registrata il</span>
+                    <span class="value td-muted">{{ operation.createdAt|date('d/m/Y H:i') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ── DESCRIZIONE ────────────────────────────────────────── #}
+    {% if operation.description %}
+    <div class="card">
+        <div class="card-header">
+            {{ icon('file-text', 'icon') }} Descrizione
+        </div>
+        <div class="card-body">
+            <p class="memory-show-notes">{{ operation.description }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    {# ── NOTE ───────────────────────────────────────────────── #}
+    {% if operation.notes %}
+    <div class="card">
+        <div class="card-header">
+            {{ icon('message-square', 'icon') }} Note
+        </div>
+        <div class="card-body">
+            <p class="memory-show-notes">{{ operation.notes }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<div class="memory-back-row">
+    <a href="{{ path('operation_index') }}" class="btn-cancel">
+        {{ icon('arrow-left', 'icon icon-sm') }} Torna alla lista
+    </a>
+</div>
+{% endblock %}

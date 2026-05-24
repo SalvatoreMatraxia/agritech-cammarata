@@ -1,3 +1,4 @@
+@import './components/sidebar.css';
 @import './components/icons.css';
 @import './components/phenology.css';
 @import './components/cards.css';
@@ -25,14 +26,17 @@
     --border-radius:   8px;
     --shadow:          0 2px 8px rgba(0, 0, 0, 0.1);
 
-    /* derived / backward-compat aliases */
-    --color-text-muted:    #5A7A45;
-    --color-text-secondary: #888888;
-    --color-border:        #C8E0A8;
-    --color-bg-card:       #FFFFFF;
-    --nav-h:               60px;
+    /* sidebar / layout */
+    --sidebar-w:         250px;
+    --mobile-header-h:   56px;
 
-    /* ── STATUS PALETTE (badge, alert, flash) ──────────────── */
+    /* derived / backward-compat aliases */
+    --color-text-muted:      #5A7A45;
+    --color-text-secondary:  #888888;
+    --color-border:          #C8E0A8;
+    --color-bg-card:         #FFFFFF;
+
+    /* ── STATUS PALETTE ────────────────────────────────────── */
     --color-success:        #28a745;
     --color-success-bg:     #d4edda;
     --color-success-text:   #155724;
@@ -52,16 +56,16 @@
     --ndvi-red:         #cc2222;
     --ndvi-unknown:     #aaaaaa;
 
-    /* ── TEMPERATURA (forecast) ─────────────────────────────── */
+    /* ── TEMPERATURA ────────────────────────────────────────── */
     --color-temp-hot:  #c0392b;
     --color-temp-cold: #2980b9;
 
-    /* ── NDVI TEXT (darker for legibility on white bg) ──────── */
+    /* ── NDVI TEXT ──────────────────────────────────────────── */
     --color-ndvi-text-green:  #4a9e48;
     --color-ndvi-text-yellow: #9a7c00;
     --color-ndvi-text-orange: #c05c00;
 
-    /* ── RISK / STRESS PALETTE ──────────────────────────────── */
+    /* ── RISK / STRESS ──────────────────────────────────────── */
     --color-risk-high-bg:   #ffe5cc;
     --color-risk-high-text: #7a3800;
     --color-stress-low:     #90d83b;
@@ -77,141 +81,6 @@ body {
     background: var(--color-bg);
     color: var(--color-text);
     min-height: 100vh;
-}
-
-/* ── NAVBAR ──────────────────────────────────────────────── */
-.navbar {
-    background: var(--color-primary);
-    height: var(--nav-h);
-    display: flex;
-    align-items: center;
-    padding: 0 1.25rem;
-    position: sticky;
-    top: 0;
-    z-index: 1001;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-}
-
-.navbar-brand {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--color-white);
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 1.1rem;
-    letter-spacing: 0.02em;
-}
-
-.navbar-brand .olive { display: flex; align-items: center; }
-
-.navbar-nav {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.nav-link {
-    color: rgba(255, 255, 255, 0.85);
-    text-decoration: none;
-    padding: 0.4rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    transition: background 0.15s;
-}
-
-.nav-link:hover  { background: rgba(255, 255, 255, 0.15); color: var(--color-white); }
-.nav-link.active { background: var(--color-secondary); color: var(--color-white); }
-
-.nav-user {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.8rem;
-    padding: 0.4rem 0.75rem;
-}
-
-.nav-divider {
-    width: 1px;
-    height: 20px;
-    background: rgba(255, 255, 255, 0.2);
-    margin: 0 0.25rem;
-}
-
-/* ── NAVBAR LINK ICONS ───────────────────────────────────── */
-.nav-icon {
-    width: 18px;
-    height: 18px;
-    margin-right: 4px;
-    vertical-align: middle;
-    flex-shrink: 0;
-}
-
-@media (max-width: 768px) {
-    .nav-icon { display: none; }
-}
-
-/* ── HAMBURGER (hidden on desktop) ───────────────────────── */
-.navbar-hamburger {
-    display: none;
-    background: transparent;
-    border: none;
-    color: var(--color-white);
-    font-size: 1.4rem;
-    cursor: pointer;
-    min-height: 44px;
-    min-width: 44px;
-    align-items: center;
-    justify-content: center;
-    margin-left: auto;
-    border-radius: 6px;
-    transition: background 0.15s;
-}
-
-.navbar-hamburger:hover { background: rgba(255, 255, 255, 0.15); }
-
-/* ── NAVBAR MOBILE ───────────────────────────────────────── */
-@media (max-width: 768px) {
-    .navbar { position: relative; flex-wrap: wrap; }
-
-    .navbar-hamburger { display: flex; }
-
-    .navbar-nav {
-        display: none;
-        flex-direction: column;
-        align-items: stretch;
-        position: absolute;
-        top: var(--nav-h);
-        left: 0;
-        right: 0;
-        background: var(--color-primary);
-        z-index: 9999;
-        padding: 0.25rem 0 0.75rem;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-        gap: 0;
-        margin-left: 0;
-    }
-
-    .navbar-nav.open { display: flex; }
-
-    .nav-link {
-        padding: 0.85rem 1.25rem;
-        border-radius: 0;
-        font-size: 0.95rem;
-        min-height: 44px;
-        display: flex;
-        align-items: center;
-    }
-
-    .nav-divider { display: none; }
-
-    .nav-user {
-        padding: 0.75rem 1.25rem 0.25rem;
-        font-size: 0.78rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        margin-top: 0.25rem;
-    }
-
-    .nav-link-desktop-only { display: none; }
 }
 
 /* ── LAYOUT ──────────────────────────────────────────────── */
@@ -238,11 +107,11 @@ body {
 .mt-md { margin-top: 0.75rem; }
 .mt-lg { margin-top: 1rem; }
 
-/* ── MAP FLASH (posizionato sopra la mappa) ──────────────── */
+/* ── MAP FLASH ───────────────────────────────────────────── */
 .map-flash {
     position: fixed;
-    top: var(--nav-h);
-    left: 0;
+    top: 0;
+    left: var(--sidebar-w);
     right: 0;
     z-index: 9999;
     text-align: center;
@@ -284,7 +153,6 @@ body {
     min-height: 44px;
 }
 
-.nav-link,
 .btn-primary,
 .btn-secondary,
 .btn-login,
@@ -300,6 +168,11 @@ body {
         padding: 1rem 0.75rem 2rem;
     }
 
+    .map-flash {
+        top: var(--mobile-header-h);
+        left: 0;
+    }
+
     .page-title {
         font-size: 1.15rem;
         margin-bottom: 1rem;
@@ -308,8 +181,6 @@ body {
 
 @media (max-width: 480px) {
     body { font-size: 14px; }
-
     .page-title { font-size: 1rem; }
-
     .main-content { padding: 0.75rem 0.6rem 1.5rem; }
 }

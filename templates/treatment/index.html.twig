@@ -59,7 +59,7 @@
             </thead>
             <tbody>
                 {% for treatment in treatments %}
-                <tr>
+                <tr data-href="{{ path('treatment_show', {id: treatment.id}) }}">
                     <td data-label="Data" class="td-date">{{ treatment.date|date('d/m/Y') }}</td>
                     <td data-label="Parcella">{{ treatment.parcel.name }}</td>
                     <td data-label="Prodotto" class="td-product">{{ treatment.productName }}</td>
@@ -86,7 +86,7 @@
                         <span class="td-muted">—</span>
                         {% endif %}
                     </td>
-                    <td data-label=""><a href="{{ path('treatment_show', {id: treatment.id}) }}" class="btn-link">Dettaglio</a></td>
+                    <td class="td-action">{{ icon('chevron-right', 'icon icon-sm') }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

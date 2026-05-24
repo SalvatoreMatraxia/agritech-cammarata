@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 #[IsGranted('ROLE_USER')]
 #[Route('/farm/memory')]
@@ -40,6 +41,23 @@ class FarmMemoryController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}', name: 'farm_memory_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function show(FarmSeasonRecord $record): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $farm = $user->getFarms()->first() ?: null;
+
+        if ($farm === null || $record->getFarm()->getId() !== $farm->getId()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        return $this->render('farm/memory_show.html.twig', [
+            'record' => $record,
+            'farm'   => $farm,
+        ]);
+    }
+
     #[Route('/new', name: 'farm_memory_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
@@ -58,10 +76,12 @@ class FarmMemoryController extends AbstractController
             ->createQueryBuilder('p')
             ->where('p.farm = :farm')
             ->andWhere('p.type = :type')
-            ->andWhere('YEAR(p.targetDate) = :year')
+            ->andWhere('p.targetDate >= :yearStart')
+            ->andWhere('p.targetDate < :yearEnd')
             ->setParameter('farm', $farm)
             ->setParameter('type', 'yield')
-            ->setParameter('year', $currentYear)
+            ->setParameter('yearStart', new \DateTimeImmutable("$currentYear-01-01"))
+            ->setParameter('yearEnd',   new \DateTimeImmutable(($currentYear + 1) . '-01-01'))
             ->orderBy('p.createdAt', 'DESC')
             ->setMaxResults(1)
             ->getQuery()

@@ -52,11 +52,12 @@
                             <th class="text-right">Olio (L)</th>
                             <th>Qualità</th>
                             <th>Note</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for record in records %}
-                        <tr>
+                        <tr data-href="{{ path('farm_memory_show', {id: record.id}) }}">
                             <td class="td-year">{{ record.year }}</td>
                             <td class="text-right">
                                 {{ record.predictedYieldKg ? record.predictedYieldKg|number_format(0) : '—' }}
@@ -78,6 +79,7 @@
                             </td>
                             <td>{{ record.oilQuality ?? '—' }}</td>
                             <td class="memory-notes">{{ record.notes ?? '' }}</td>
+                            <td class="td-action">{{ icon('chevron-right', 'icon icon-sm') }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

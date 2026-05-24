@@ -51,12 +51,13 @@
                     <th>Durata (h)</th>
                     <th>Operatore</th>
                     <th>Costo (€)</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {% for op in operations %}
                 {% set typeInfo = types[op.type] ?? {label: op.type, icon: 'leaf'} %}
-                <tr>
+                <tr data-href="{{ path('operation_show', {id: op.id}) }}">
                     <td data-label="Data" class="td-date">{{ op.date|date('d/m/Y') }}</td>
                     <td data-label="Tipo">
                         <span class="op-type-badge">{{ icon(typeInfo.icon, 'icon') }} {{ typeInfo.label }}</span>
@@ -66,6 +67,7 @@
                     <td data-label="Durata (h)" class="td-center">{{ op.durationHours ? op.durationHours|number_format(1) : '—' }}</td>
                     <td data-label="Operatore" class="td-muted">{{ op.operator ?? '—' }}</td>
                     <td data-label="Costo (€)" class="td-center">{{ op.costEur ? op.costEur|number_format(2) : '—' }}</td>
+                    <td class="td-action">{{ icon('chevron-right', 'icon icon-sm') }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
